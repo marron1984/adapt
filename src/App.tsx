@@ -184,6 +184,235 @@ const MOCK_ROUTES: Record<string, RouteSearchResult> = {
     distanceKm: 638,
     source: "mock",
   },
+  // ── 東北・北海道方面 ──
+  "東京-盛岡": {
+    from: "東京",
+    to: "盛岡",
+    ticketFare: 8580,
+    expressFare: 5040,
+    distanceKm: 535,
+    source: "mock",
+  },
+  "東京-秋田": {
+    from: "東京",
+    to: "秋田",
+    ticketFare: 9610,
+    expressFare: 6050,
+    distanceKm: 663,
+    source: "mock",
+  },
+  "東京-山形": {
+    from: "東京",
+    to: "山形",
+    ticketFare: 5940,
+    expressFare: 4430,
+    distanceKm: 360,
+    source: "mock",
+  },
+  "東京-新青森": {
+    from: "東京",
+    to: "新青森",
+    ticketFare: 10340,
+    expressFare: 6350,
+    distanceKm: 714,
+    source: "mock",
+  },
+  "東京-新函館北斗": {
+    from: "東京",
+    to: "新函館北斗",
+    ticketFare: 11330,
+    expressFare: 6530,
+    distanceKm: 863,
+    source: "mock",
+  },
+  "仙台-盛岡": {
+    from: "仙台",
+    to: "盛岡",
+    ticketFare: 3410,
+    expressFare: 3520,
+    distanceKm: 183,
+    source: "mock",
+  },
+  // ── 東海道・中部方面 ──
+  "東京-静岡": {
+    from: "東京",
+    to: "静岡",
+    ticketFare: 3410,
+    expressFare: 3520,
+    distanceKm: 180,
+    source: "mock",
+  },
+  "東京-浜松": {
+    from: "東京",
+    to: "浜松",
+    ticketFare: 4510,
+    expressFare: 4180,
+    distanceKm: 257,
+    source: "mock",
+  },
+  "東京-長野": {
+    from: "東京",
+    to: "長野",
+    ticketFare: 4070,
+    expressFare: 4200,
+    distanceKm: 222,
+    source: "mock",
+  },
+  "名古屋-金沢": {
+    from: "名古屋",
+    to: "金沢",
+    ticketFare: 4510,
+    expressFare: 2640,
+    distanceKm: 256,
+    source: "mock",
+  },
+  "名古屋-仙台": {
+    from: "名古屋",
+    to: "仙台",
+    ticketFare: 10560,
+    expressFare: 5280,
+    distanceKm: 732,
+    source: "mock",
+  },
+  "名古屋-博多": {
+    from: "名古屋",
+    to: "博多",
+    ticketFare: 11000,
+    expressFare: 5280,
+    distanceKm: 811,
+    source: "mock",
+  },
+  // ── 関西方面 ──
+  "大阪-広島": {
+    from: "大阪",
+    to: "広島",
+    ticketFare: 5720,
+    expressFare: 4180,
+    distanceKm: 342,
+    source: "mock",
+  },
+  "大阪-金沢": {
+    from: "大阪",
+    to: "金沢",
+    ticketFare: 4840,
+    expressFare: 2640,
+    distanceKm: 268,
+    source: "mock",
+  },
+  "大阪-仙台": {
+    from: "大阪",
+    to: "仙台",
+    ticketFare: 11000,
+    expressFare: 5490,
+    distanceKm: 853,
+    source: "mock",
+  },
+  "京都-博多": {
+    from: "京都",
+    to: "博多",
+    ticketFare: 9610,
+    expressFare: 5280,
+    distanceKm: 612,
+    source: "mock",
+  },
+  "京都-広島": {
+    from: "京都",
+    to: "広島",
+    ticketFare: 5500,
+    expressFare: 4180,
+    distanceKm: 332,
+    source: "mock",
+  },
+  // ── 九州方面 ──
+  "東京-熊本": {
+    from: "東京",
+    to: "熊本",
+    ticketFare: 14080,
+    expressFare: 6800,
+    distanceKm: 1118,
+    source: "mock",
+  },
+  "東京-鹿児島中央": {
+    from: "東京",
+    to: "鹿児島中央",
+    ticketFare: 15950,
+    expressFare: 7250,
+    distanceKm: 1325,
+    source: "mock",
+  },
+  "大阪-鹿児島中央": {
+    from: "大阪",
+    to: "鹿児島中央",
+    ticketFare: 11000,
+    expressFare: 5810,
+    distanceKm: 912,
+    source: "mock",
+  },
+  "大阪-熊本": {
+    from: "大阪",
+    to: "熊本",
+    ticketFare: 10010,
+    expressFare: 5590,
+    distanceKm: 756,
+    source: "mock",
+  },
+  "博多-熊本": {
+    from: "博多",
+    to: "熊本",
+    ticketFare: 2170,
+    expressFare: 2200,
+    distanceKm: 118,
+    source: "mock",
+  },
+  "博多-鹿児島中央": {
+    from: "博多",
+    to: "鹿児島中央",
+    ticketFare: 4510,
+    expressFare: 3740,
+    distanceKm: 289,
+    source: "mock",
+  },
+  "広島-博多": {
+    from: "広島",
+    to: "博多",
+    ticketFare: 5720,
+    expressFare: 3740,
+    distanceKm: 281,
+    source: "mock",
+  },
+  // ── 短距離区間（100km以下で割引なしケース確認用） ──
+  "東京-小田原": {
+    from: "東京",
+    to: "小田原",
+    ticketFare: 1520,
+    expressFare: 1760,
+    distanceKm: 84,
+    source: "mock",
+  },
+  "大阪-京都": {
+    from: "大阪",
+    to: "京都",
+    ticketFare: 580,
+    expressFare: 0,
+    distanceKm: 43,
+    source: "mock",
+  },
+  "名古屋-京都": {
+    from: "名古屋",
+    to: "京都",
+    ticketFare: 2640,
+    expressFare: 2530,
+    distanceKm: 146,
+    source: "mock",
+  },
+  "博多-小倉": {
+    from: "博多",
+    to: "小倉",
+    ticketFare: 1310,
+    expressFare: 1730,
+    distanceKm: 67,
+    source: "mock",
+  },
 };
 
 /**
@@ -872,11 +1101,14 @@ export default function App() {
             </div>
           )}
 
-          <p className="text-xs text-gray-400">
-            対応区間（デモ）: 東京−大阪, 東京−名古屋, 東京−仙台, 東京−新潟,
-            東京−広島, 東京−博多, 東京−金沢, 東京−京都, 大阪−博多, 大阪−新潟,
-            名古屋−大阪 ※逆方向も可
-          </p>
+          <details className="text-xs text-gray-400">
+            <summary className="cursor-pointer hover:text-gray-600">
+              対応区間一覧（デモ: {Object.keys(MOCK_ROUTES).length}区間）※逆方向も可
+            </summary>
+            <p className="mt-1 leading-relaxed">
+              {Object.keys(MOCK_ROUTES).join(", ")}
+            </p>
+          </details>
         </section>
 
         {/* ── 鉄道入力セクション ── */}
