@@ -15,7 +15,9 @@ import {
   MapPin,
   Loader2,
   ArrowRight,
+  Building2,
 } from "lucide-react";
+import OsakaBenefits from "./OsakaBenefits";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -938,7 +940,7 @@ function AirResultCard({ result }: { result: AirFareResult }) {
 // App
 // ---------------------------------------------------------------------------
 
-export default function App() {
+function SimulatorPage({ onNavigateOsaka }: { onNavigateOsaka: () => void }) {
   // 共通
   const [disabilityType, setDisabilityType] = useState<DisabilityType>("type1");
   const [hasCaregiver, setHasCaregiver] = useState(false);
@@ -1405,6 +1407,39 @@ export default function App() {
           </div>
         </section>
 
+        {/* ── 大阪ガイドへのナビゲーション ── */}
+        <section
+          className="bg-indigo-50 border-2 border-indigo-300 rounded-2xl p-6"
+          aria-label="大阪の障害者割引・優待ガイドへ"
+        >
+          <button
+            type="button"
+            onClick={onNavigateOsaka}
+            className="w-full flex items-center justify-between gap-4 text-left focus:outline-none focus:ring-4 focus:ring-indigo-400 rounded-xl p-3 hover:bg-indigo-100 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <Building2
+                size={32}
+                className="text-indigo-600 shrink-0"
+                aria-hidden
+              />
+              <div>
+                <p className="text-lg font-bold text-indigo-800">
+                  大阪 障害者割引・優待ガイド
+                </p>
+                <p className="text-sm text-indigo-600">
+                  交通・施設・医療・税金・住宅・携帯など大阪で使える制度を網羅
+                </p>
+              </div>
+            </div>
+            <ArrowRight
+              size={24}
+              className="text-indigo-500 shrink-0"
+              aria-hidden
+            />
+          </button>
+        </section>
+
         {/* ── 注意事項 ── */}
         <section
           className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 text-base text-amber-900 space-y-2"
@@ -1440,4 +1475,14 @@ export default function App() {
       </footer>
     </div>
   );
+}
+
+export default function App() {
+  const [page, setPage] = useState<"simulator" | "osaka">("simulator");
+
+  if (page === "osaka") {
+    return <OsakaBenefits onBack={() => setPage("simulator")} />;
+  }
+
+  return <SimulatorPage onNavigateOsaka={() => setPage("osaka")} />;
 }
