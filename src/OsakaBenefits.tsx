@@ -1,6 +1,5 @@
 import {
   Train,
-  Bus,
   Building2,
   Landmark,
   Ticket,
