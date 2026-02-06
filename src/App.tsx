@@ -478,6 +478,30 @@ const MOCK_ROUTES: Record<string, RouteSearchResult> = {
     distanceKm: 760,
     source: "mock",
   },
+  "鶴橋-新高岡": {
+    from: "鶴橋",
+    to: "新高岡",
+    ticketFare: 5080,
+    expressFare: 4180,
+    distanceKm: 315,
+    source: "mock",
+  },
+  "鶴橋-金沢": {
+    from: "鶴橋",
+    to: "金沢",
+    ticketFare: 4840,
+    expressFare: 2640,
+    distanceKm: 272,
+    source: "mock",
+  },
+  "鶴橋-芦原温泉": {
+    from: "鶴橋",
+    to: "芦原温泉",
+    ticketFare: 3740,
+    expressFare: 2530,
+    distanceKm: 205,
+    source: "mock",
+  },
 };
 
 /**
