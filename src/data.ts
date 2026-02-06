@@ -70,6 +70,8 @@ export interface LifeCategory {
   colorBadge: string;
   colorIconBg: string;
   colorIconFg: string;
+  imageUrl: string;
+  gradientClass: string;
 }
 
 export const LIFE_CATEGORIES: LifeCategory[] = [
@@ -80,6 +82,8 @@ export const LIFE_CATEGORIES: LifeCategory[] = [
     colorBadge: "bg-rose-100 text-rose-700",
     colorIconBg: "bg-rose-100",
     colorIconFg: "text-rose-600",
+    imageUrl: "https://images.unsplash.com/photo-1528164344705-47542687000d?w=800&h=500&fit=crop&auto=format&q=80",
+    gradientClass: "grad-entertainment",
   },
   {
     id: "telecom",
@@ -88,6 +92,8 @@ export const LIFE_CATEGORIES: LifeCategory[] = [
     colorBadge: "bg-violet-100 text-violet-700",
     colorIconBg: "bg-violet-100",
     colorIconFg: "text-violet-700",
+    imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=500&fit=crop&auto=format&q=80",
+    gradientClass: "grad-telecom",
   },
   {
     id: "mobility",
@@ -96,6 +102,8 @@ export const LIFE_CATEGORIES: LifeCategory[] = [
     colorBadge: "bg-brand-100 text-brand-800",
     colorIconBg: "bg-brand-100",
     colorIconFg: "text-brand-700",
+    imageUrl: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&h=500&fit=crop&auto=format&q=80",
+    gradientClass: "grad-mobility",
   },
   {
     id: "support",
@@ -104,6 +112,43 @@ export const LIFE_CATEGORIES: LifeCategory[] = [
     colorBadge: "bg-accent-100 text-accent-600",
     colorIconBg: "bg-accent-100",
     colorIconFg: "text-accent-600",
+    imageUrl: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&h=500&fit=crop&auto=format&q=80",
+    gradientClass: "grad-support",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Hero & city images (Unsplash — free for commercial use)
+// ---------------------------------------------------------------------------
+
+export const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=1400&h=500&fit=crop&auto=format&q=80";
+
+export interface CityImage {
+  id: string;
+  name: string;
+  imageUrl: string;
+  gradientClass: string;
+}
+
+export const CITY_IMAGES: CityImage[] = [
+  {
+    id: "osaka",
+    name: "大阪",
+    imageUrl: "https://images.unsplash.com/photo-1590559899731-a382839e5549?w=800&h=500&fit=crop&auto=format&q=80",
+    gradientClass: "grad-osaka",
+  },
+  {
+    id: "kobe",
+    name: "神戸",
+    imageUrl: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800&h=500&fit=crop&auto=format&q=80",
+    gradientClass: "grad-kobe",
+  },
+  {
+    id: "kyoto",
+    name: "京都",
+    imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&h=500&fit=crop&auto=format&q=80",
+    gradientClass: "grad-kyoto",
   },
 ];
 

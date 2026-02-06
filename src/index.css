@@ -103,3 +103,73 @@ body {
     transform: translateY(0);
   }
 }
+
+/* ── Image card with overlay ── */
+.img-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+}
+.img-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.img-card:hover img {
+  transform: scale(1.05);
+}
+.img-card .img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.6) 0%, rgb(0 0 0 / 0.1) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+}
+
+/* ── Glassmorphism chip ── */
+.glass {
+  background: rgb(255 255 255 / 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.2);
+}
+
+/* ── Gradient fallbacks for hero/category images ── */
+.grad-hero {
+  background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #db2777 100%);
+}
+.grad-entertainment {
+  background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%);
+}
+.grad-telecom {
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+}
+.grad-mobility {
+  background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+}
+.grad-support {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+.grad-osaka {
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+}
+.grad-kobe {
+  background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
+}
+.grad-kyoto {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+}
+
+/* ── Shimmer loading placeholder ── */
+.shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
