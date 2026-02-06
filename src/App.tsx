@@ -176,6 +176,14 @@ const MOCK_ROUTES: Record<string, RouteSearchResult> = {
     distanceKm: 476,
     source: "mock",
   },
+  "大阪-新潟": {
+    from: "大阪",
+    to: "新潟",
+    ticketFare: 8910,
+    expressFare: 5810,
+    distanceKm: 638,
+    source: "mock",
+  },
 };
 
 /**
@@ -866,8 +874,8 @@ export default function App() {
 
           <p className="text-xs text-gray-400">
             対応区間（デモ）: 東京−大阪, 東京−名古屋, 東京−仙台, 東京−新潟,
-            東京−広島, 東京−博多, 東京−金沢, 東京−京都, 大阪−博多, 名古屋−大阪
-            ※逆方向も可
+            東京−広島, 東京−博多, 東京−金沢, 東京−京都, 大阪−博多, 大阪−新潟,
+            名古屋−大阪 ※逆方向も可
           </p>
         </section>
 
