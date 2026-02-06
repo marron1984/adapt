@@ -1,1 +1,105 @@
+@import url("https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap");
 @import "tailwindcss";
+
+/* ── Design Tokens (Tailwind v4 theme) ── */
+@theme {
+  --font-family-sans: "BIZ UDPGothic", "Hiragino Sans", "Noto Sans JP",
+    sans-serif;
+
+  /* Brand palette — WCAG AA on off-white #F8FAFC */
+  --color-brand-900: #1e3a5f;
+  --color-brand-800: #1e40af;
+  --color-brand-700: #2563eb;
+  --color-brand-600: #3b82f6;
+  --color-brand-100: #dbeafe;
+  --color-brand-50: #eff6ff;
+
+  --color-accent-600: #059669;
+  --color-accent-500: #10b981;
+  --color-accent-100: #d1fae5;
+  --color-accent-50: #ecfdf5;
+
+  --color-warn-700: #b45309;
+  --color-warn-600: #d97706;
+  --color-warn-100: #fef3c7;
+  --color-warn-50: #fffbeb;
+
+  --color-surface: #f8fafc;
+  --color-card: #ffffff;
+}
+
+/* ── Base ── */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  background: var(--color-surface);
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Focus ring — visible, high contrast ── */
+:focus-visible {
+  outline: 3px solid var(--color-brand-700);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Skip-to-content (screen reader / keyboard) ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-brand-800);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0 0 0.5rem 0.5rem;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ── Soft card shadow ── */
+.card-soft {
+  background: var(--color-card);
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.04),
+    0 4px 12px rgb(0 0 0 / 0.03);
+}
+
+/* ── Hover lift ── */
+.hover-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 16px rgb(0 0 0 / 0.08),
+    0 1px 4px rgb(0 0 0 / 0.04);
+}
+
+/* ── Smooth expand / collapse ── */
+.expand-enter {
+  animation: expandIn 0.25s ease-out;
+}
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

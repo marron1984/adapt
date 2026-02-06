@@ -15,6 +15,9 @@ import {
   CheckCircle2,
   XCircle,
   MinusCircle,
+  ArrowLeft,
+  Filter,
+  TableProperties,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -36,20 +39,30 @@ interface BenefitCategory {
   id: string;
   title: string;
   icon: React.ReactNode;
-  color: string;
+  colorClass: {
+    badge: string;
+    iconBg: string;
+    iconFg: string;
+    ring: string;
+  };
   items: BenefitItem[];
 }
 
 // ---------------------------------------------------------------------------
-// Data
+// Data — unchanged content, new color token structure
 // ---------------------------------------------------------------------------
 
 const CATEGORIES: BenefitCategory[] = [
   {
     id: "transport",
     title: "交通機関",
-    icon: <Train size={24} aria-hidden />,
-    color: "indigo",
+    icon: <Train size={22} aria-hidden />,
+    colorClass: {
+      badge: "bg-brand-100 text-brand-800",
+      iconBg: "bg-brand-100",
+      iconFg: "text-brand-700",
+      ring: "ring-brand-200",
+    },
     items: [
       {
         name: "Osaka Metro（地下鉄・ニュートラム）",
@@ -128,9 +141,14 @@ const CATEGORIES: BenefitCategory[] = [
   },
   {
     id: "public",
-    title: "公共施設（美術館・博物館・動物園・公園など）",
-    icon: <Landmark size={24} aria-hidden />,
-    color: "emerald",
+    title: "公共施設",
+    icon: <Landmark size={22} aria-hidden />,
+    colorClass: {
+      badge: "bg-accent-100 text-accent-600",
+      iconBg: "bg-accent-100",
+      iconFg: "text-accent-600",
+      ring: "ring-accent-100",
+    },
     items: [
       {
         name: "大阪城天守閣",
@@ -211,8 +229,13 @@ const CATEGORIES: BenefitCategory[] = [
   {
     id: "leisure",
     title: "レジャー・娯楽",
-    icon: <Ticket size={24} aria-hidden />,
-    color: "rose",
+    icon: <Ticket size={22} aria-hidden />,
+    colorClass: {
+      badge: "bg-rose-100 text-rose-700",
+      iconBg: "bg-rose-100",
+      iconFg: "text-rose-600",
+      ring: "ring-rose-100",
+    },
     items: [
       {
         name: "ユニバーサル・スタジオ・ジャパン（USJ）",
@@ -275,8 +298,13 @@ const CATEGORIES: BenefitCategory[] = [
   {
     id: "medical",
     title: "医療・福祉",
-    icon: <Heart size={24} aria-hidden />,
-    color: "red",
+    icon: <Heart size={22} aria-hidden />,
+    colorClass: {
+      badge: "bg-red-100 text-red-700",
+      iconBg: "bg-red-100",
+      iconFg: "text-red-600",
+      ring: "ring-red-100",
+    },
     items: [
       {
         name: "重度障がい者医療費助成制度（大阪市）",
@@ -291,8 +319,7 @@ const CATEGORIES: BenefitCategory[] = [
         name: "自立支援医療（精神通院医療）",
         target: "精神疾患で通院治療中の方（手帳不問）",
         detail: "精神科の通院医療費の自己負担が原則1割に軽減。",
-        notes:
-          "精神手帳と同時申請可能。所得に応じた月額上限あり。",
+        notes: "精神手帳と同時申請可能。所得に応じた月額上限あり。",
         mentalGrade: { g1: "all", g2: "all", g3: "all" },
       },
       {
@@ -315,8 +342,13 @@ const CATEGORIES: BenefitCategory[] = [
   {
     id: "tax",
     title: "税金・公共料金",
-    icon: <Receipt size={24} aria-hidden />,
-    color: "amber",
+    icon: <Receipt size={22} aria-hidden />,
+    colorClass: {
+      badge: "bg-warn-100 text-warn-700",
+      iconBg: "bg-warn-100",
+      iconFg: "text-warn-700",
+      ring: "ring-warn-100",
+    },
     items: [
       {
         name: "所得税の障害者控除",
@@ -377,8 +409,13 @@ const CATEGORIES: BenefitCategory[] = [
   {
     id: "housing",
     title: "住宅",
-    icon: <Home size={24} aria-hidden />,
-    color: "sky",
+    icon: <Home size={22} aria-hidden />,
+    colorClass: {
+      badge: "bg-sky-100 text-sky-700",
+      iconBg: "bg-sky-100",
+      iconFg: "text-sky-700",
+      ring: "ring-sky-100",
+    },
     items: [
       {
         name: "大阪市営住宅（公営住宅）の優先入居",
@@ -403,8 +440,13 @@ const CATEGORIES: BenefitCategory[] = [
   {
     id: "telecom",
     title: "携帯電話・通信",
-    icon: <Smartphone size={24} aria-hidden />,
-    color: "violet",
+    icon: <Smartphone size={22} aria-hidden />,
+    colorClass: {
+      badge: "bg-violet-100 text-violet-700",
+      iconBg: "bg-violet-100",
+      iconFg: "text-violet-700",
+      ring: "ring-violet-100",
+    },
     items: [
       {
         name: "NTTドコモ「ハーティ割引」",
@@ -420,8 +462,7 @@ const CATEGORIES: BenefitCategory[] = [
         target: "全手帳（等級不問）",
         detail:
           "基本料金・通話料・SMS送信料の割引（プランにより金額が異なる）。",
-        notes:
-          "家族割との併用可。契約名義人本人のみ適用。",
+        notes: "家族割との併用可。契約名義人本人のみ適用。",
         mentalGrade: { g1: "all", g2: "all", g3: "all" },
       },
       {
@@ -437,7 +478,7 @@ const CATEGORIES: BenefitCategory[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Summary table data for mental health disability handbook
+// Summary table data
 // ---------------------------------------------------------------------------
 
 interface SummaryRow {
@@ -520,7 +561,7 @@ const SUMMARY_ROWS: SummaryRow[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Helper components
+// Small helper components
 // ---------------------------------------------------------------------------
 
 function GradeIcon({ grade }: { grade: Grade }) {
@@ -528,32 +569,24 @@ function GradeIcon({ grade }: { grade: Grade }) {
     case "all":
       return (
         <CheckCircle2
-          size={18}
-          className="text-emerald-600 shrink-0"
+          size={16}
+          className="text-accent-600 shrink-0"
           aria-label="対象"
         />
       );
     case "none":
       return (
         <XCircle
-          size={18}
+          size={16}
           className="text-gray-400 shrink-0"
           aria-label="対象外"
-        />
-      );
-    case "note":
-      return (
-        <MinusCircle
-          size={18}
-          className="text-amber-500 shrink-0"
-          aria-label="条件付き"
         />
       );
     default:
       return (
         <MinusCircle
-          size={18}
-          className="text-amber-500 shrink-0"
+          size={16}
+          className="text-warn-600 shrink-0"
           aria-label="条件付き"
         />
       );
@@ -561,110 +594,89 @@ function GradeIcon({ grade }: { grade: Grade }) {
 }
 
 function GradeBadge({ grade }: { grade: Grade }) {
-  const styles: Record<Grade, string> = {
-    all: "bg-emerald-100 text-emerald-800",
-    "1": "bg-blue-100 text-blue-800",
-    "12": "bg-blue-100 text-blue-800",
-    "1only": "bg-blue-100 text-blue-800",
-    none: "bg-gray-100 text-gray-500",
-    note: "bg-amber-100 text-amber-800",
+  const map: Record<
+    Grade,
+    { cls: string; label: string }
+  > = {
+    all: { cls: "bg-accent-100 text-accent-600", label: "対象" },
+    "1": { cls: "bg-brand-100 text-brand-800", label: "1級のみ" },
+    "12": { cls: "bg-brand-100 text-brand-800", label: "1・2級" },
+    "1only": { cls: "bg-brand-100 text-brand-800", label: "1級のみ" },
+    none: { cls: "bg-gray-100 text-gray-400", label: "対象外" },
+    note: { cls: "bg-warn-100 text-warn-700", label: "条件付き" },
   };
-  const labels: Record<Grade, string> = {
-    all: "対象",
-    "1": "1級のみ",
-    "12": "1・2級",
-    "1only": "1級のみ",
-    none: "対象外",
-    note: "条件付き",
-  };
+  const { cls, label } = map[grade];
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${styles[grade]}`}
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold leading-tight ${cls}`}
     >
       <GradeIcon grade={grade} />
-      {labels[grade]}
+      {label}
     </span>
   );
 }
 
-const colorMap: Record<string, { bg: string; border: string; heading: string; icon: string }> = {
-  indigo: {
-    bg: "bg-indigo-50",
-    border: "border-indigo-300",
-    heading: "text-indigo-800",
-    icon: "text-indigo-600",
-  },
-  emerald: {
-    bg: "bg-emerald-50",
-    border: "border-emerald-300",
-    heading: "text-emerald-800",
-    icon: "text-emerald-600",
-  },
-  rose: {
-    bg: "bg-rose-50",
-    border: "border-rose-300",
-    heading: "text-rose-800",
-    icon: "text-rose-600",
-  },
-  red: {
-    bg: "bg-red-50",
-    border: "border-red-300",
-    heading: "text-red-800",
-    icon: "text-red-600",
-  },
-  amber: {
-    bg: "bg-amber-50",
-    border: "border-amber-300",
-    heading: "text-amber-800",
-    icon: "text-amber-600",
-  },
-  sky: {
-    bg: "bg-sky-50",
-    border: "border-sky-300",
-    heading: "text-sky-800",
-    icon: "text-sky-600",
-  },
-  violet: {
-    bg: "bg-violet-50",
-    border: "border-violet-300",
-    heading: "text-violet-800",
-    icon: "text-violet-600",
-  },
-};
+/** Summary table cell badge */
+function CellBadge({ text }: { text: string }) {
+  const neg = text === "対象外";
+  const pos =
+    text.includes("対象") ||
+    text.includes("無料") ||
+    text.includes("割引") ||
+    text.includes("半額") ||
+    text.includes("1,000円") ||
+    text.includes("万円");
+  return (
+    <span
+      className={`inline-block rounded-md px-2.5 py-1 text-xs font-bold leading-tight ${
+        neg
+          ? "bg-gray-100 text-gray-400"
+          : pos
+            ? "bg-accent-50 text-accent-600"
+            : "bg-gray-100 text-gray-600"
+      }`}
+    >
+      {text}
+    </span>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Category section — accordion with Bento-style cards inside
+// ---------------------------------------------------------------------------
 
 function CategorySection({ category }: { category: BenefitCategory }) {
   const [isOpen, setIsOpen] = useState(true);
-  const colors = colorMap[category.color] ?? colorMap.indigo;
+  const c = category.colorClass;
 
   return (
-    <section
-      className={`rounded-2xl border-2 ${colors.border} ${colors.bg} overflow-hidden`}
-      aria-label={category.title}
-    >
+    <section className="card-soft overflow-hidden" aria-label={category.title}>
       <button
         type="button"
         onClick={() => setIsOpen((v) => !v)}
-        className={`w-full flex items-center justify-between gap-3 p-5 text-left focus:outline-none focus:ring-4 focus:ring-indigo-400`}
         aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left min-h-[48px]"
       >
-        <h2
-          className={`text-xl font-bold flex items-center gap-2 ${colors.heading}`}
-        >
-          <span className={colors.icon}>{category.icon}</span>
+        <h2 className="flex items-center gap-3 text-lg font-bold text-slate-800">
+          <span
+            className={`inline-flex items-center justify-center rounded-xl p-2 ${c.iconBg} ${c.iconFg}`}
+          >
+            {category.icon}
+          </span>
           {category.title}
-          <span className="text-sm font-normal text-gray-500 ml-1">
-            （{category.items.length}件）
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${c.badge}`}>
+            {category.items.length}件
           </span>
         </h2>
         {isOpen ? (
-          <ChevronUp size={24} className="text-gray-500 shrink-0" aria-hidden />
+          <ChevronUp size={22} className="shrink-0 text-gray-400" aria-hidden />
         ) : (
-          <ChevronDown size={24} className="text-gray-500 shrink-0" aria-hidden />
+          <ChevronDown size={22} className="shrink-0 text-gray-400" aria-hidden />
         )}
       </button>
 
       {isOpen && (
-        <div className="px-5 pb-5 space-y-3">
+        <div className="expand-enter grid gap-3 px-5 pb-5 sm:grid-cols-2">
           {category.items.map((item, i) => (
             <BenefitCard key={i} item={item} />
           ))}
@@ -674,43 +686,98 @@ function CategorySection({ category }: { category: BenefitCategory }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Benefit card — Soft UI depth, Bento-sized
+// ---------------------------------------------------------------------------
+
 function BenefitCard({ item }: { item: BenefitItem }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3 shadow-sm">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <h3 className="text-lg font-bold text-gray-900">{item.name}</h3>
-        {item.mentalGrade && (
-          <div className="flex items-center gap-1 text-xs shrink-0">
-            <span className="text-gray-500 font-semibold mr-1">精神:</span>
-            <span className="flex items-center gap-0.5">
-              1級<GradeBadge grade={item.mentalGrade.g1} />
-            </span>
-            <span className="flex items-center gap-0.5">
-              2級<GradeBadge grade={item.mentalGrade.g2} />
-            </span>
-            <span className="flex items-center gap-0.5">
-              3級<GradeBadge grade={item.mentalGrade.g3} />
-            </span>
-          </div>
-        )}
-      </div>
+    <article className="group flex flex-col gap-2.5 rounded-xl border border-gray-200 bg-white p-4 hover-lift">
+      {/* Title row */}
+      <h3 className="text-base font-bold leading-snug text-slate-900">
+        {item.name}
+      </h3>
 
-      <p className="text-sm text-gray-600">
-        <span className="font-semibold text-gray-700">対象：</span>
+      {/* Grade badges */}
+      {item.mentalGrade && (
+        <div className="flex flex-wrap items-center gap-1.5" aria-label="精神手帳の等級別適用状況">
+          <span className="text-xs font-semibold text-gray-500">精神 :</span>
+          <span className="inline-flex items-center gap-1 text-xs">
+            1級 <GradeBadge grade={item.mentalGrade.g1} />
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs">
+            2級 <GradeBadge grade={item.mentalGrade.g2} />
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs">
+            3級 <GradeBadge grade={item.mentalGrade.g3} />
+          </span>
+        </div>
+      )}
+
+      {/* Target */}
+      <p className="text-sm leading-relaxed text-slate-600">
+        <span className="font-semibold text-slate-700">対象：</span>
         {item.target}
       </p>
 
-      <div className="text-sm text-gray-800 whitespace-pre-line">
+      {/* Detail */}
+      <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">
         {item.detail}
-      </div>
+      </p>
 
+      {/* Notes callout */}
       {item.notes && (
-        <div className="flex gap-2 text-sm text-amber-800 bg-amber-50 rounded-lg p-3 border border-amber-200">
-          <CircleAlert size={16} className="shrink-0 mt-0.5" aria-hidden />
+        <div
+          className="flex gap-2 rounded-lg border border-warn-100 bg-warn-50 p-3 text-sm text-warn-700"
+          role="note"
+        >
+          <CircleAlert size={16} className="mt-0.5 shrink-0" aria-hidden />
           <span>{item.notes}</span>
         </div>
       )}
-    </div>
+    </article>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Bento Grid — quick-access cards at the top
+// ---------------------------------------------------------------------------
+
+function BentoNav({
+  categories,
+  onJump,
+}: {
+  categories: BenefitCategory[];
+  onJump: (id: string) => void;
+}) {
+  return (
+    <nav aria-label="カテゴリへジャンプ">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {categories.map((cat) => {
+          const c = cat.colorClass;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => onJump(cat.id)}
+              className={`card-soft hover-lift flex flex-col items-center gap-2 px-4 py-5 text-center min-h-[72px]`}
+            >
+              <span
+                className={`inline-flex items-center justify-center rounded-xl p-2.5 ${c.iconBg} ${c.iconFg}`}
+              >
+                {cat.icon}
+              </span>
+              <span className="text-sm font-bold text-slate-700">
+                {cat.title}
+              </span>
+              <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${c.badge}`}>
+                {cat.items.length}件
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 
@@ -727,25 +794,39 @@ export default function OsakaBenefits({
     "all",
   );
 
+  const handleJump = (id: string) => {
+    document.getElementById(`cat-${id}`)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-gray-900">
-      {/* ヘッダー */}
-      <header className="bg-indigo-800 text-white py-6 px-4 shadow-md">
-        <div className="max-w-4xl mx-auto">
-          <button
-            type="button"
-            onClick={onBack}
-            className="text-indigo-200 hover:text-white text-sm mb-2 flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-white rounded"
-          >
-            ← 運賃シミュレーターに戻る
-          </button>
-          <div className="flex items-center gap-3">
-            <Building2 size={36} aria-hidden />
+    <div className="min-h-screen bg-surface text-slate-800">
+      {/* Skip link */}
+      <a href="#main-content" className="skip-link">
+        本文へスキップ
+      </a>
+
+      {/* ── Header ── */}
+      <header className="bg-brand-800 text-white">
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6">
+          <nav aria-label="パンくず">
+            <button
+              type="button"
+              onClick={onBack}
+              className="mb-3 inline-flex min-h-[44px] items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-brand-100 transition-colors hover:bg-brand-700 hover:text-white"
+            >
+              <ArrowLeft size={18} aria-hidden />
+              運賃シミュレーターに戻る
+            </button>
+          </nav>
+          <div className="flex items-center gap-4">
+            <span className="inline-flex items-center justify-center rounded-2xl bg-white/10 p-3">
+              <Building2 size={32} aria-hidden />
+            </span>
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight">
+              <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
                 大阪 障害者割引・優待ガイド
               </h1>
-              <p className="text-indigo-200 text-lg mt-1">
+              <p className="mt-1 text-base text-brand-100">
                 大阪府・大阪市で使える障害者手帳の割引・優待制度まとめ
               </p>
             </div>
@@ -753,259 +834,256 @@ export default function OsakaBenefits({
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        {/* ── フィルター ── */}
-        <section
-          className="bg-white rounded-2xl shadow-lg p-5 space-y-3"
-          aria-label="精神手帳等級フィルター"
-        >
-          <p className="font-bold text-gray-700 flex items-center gap-2">
-            <Info size={18} aria-hidden className="text-indigo-600" />
-            精神障害者保健福祉手帳の等級で絞り込み
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {(
-              [
-                { v: "all", l: "すべて表示" },
-                { v: "1", l: "1級" },
-                { v: "2", l: "2級" },
-                { v: "3", l: "3級" },
-              ] as const
-            ).map((opt) => (
-              <button
-                key={opt.v}
-                type="button"
-                onClick={() => setFilterGrade(opt.v)}
-                className={`px-5 py-2 rounded-xl text-sm font-bold border-2 transition-colors focus:outline-none focus:ring-4 focus:ring-indigo-400 ${
-                  filterGrade === opt.v
-                    ? "bg-indigo-700 text-white border-indigo-700"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-indigo-400"
-                }`}
-              >
-                {opt.l}
-              </button>
-            ))}
-          </div>
-        </section>
+      {/* ── Main ── */}
+      <main id="main-content" className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <div className="space-y-8">
+          {/* ── Bento Grid: Category Navigation ── */}
+          <section aria-label="カテゴリ一覧">
+            <BentoNav categories={CATEGORIES} onJump={handleJump} />
+          </section>
 
-        {/* ── 精神手帳 等級別まとめ表 ── */}
-        <section
-          className="bg-white rounded-2xl shadow-lg p-5 overflow-x-auto"
-          aria-label="精神手帳 等級別まとめ"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Info size={22} aria-hidden className="text-indigo-600" />
-            精神障害者保健福祉手帳 等級別まとめ
-          </h2>
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="bg-indigo-50">
-                <th className="text-left p-3 font-bold text-gray-700 border-b-2 border-indigo-200">
-                  制度
-                </th>
-                <th className="text-center p-3 font-bold text-gray-700 border-b-2 border-indigo-200 whitespace-nowrap">
-                  1級
-                </th>
-                <th className="text-center p-3 font-bold text-gray-700 border-b-2 border-indigo-200 whitespace-nowrap">
-                  2級
-                </th>
-                <th className="text-center p-3 font-bold text-gray-700 border-b-2 border-indigo-200 whitespace-nowrap">
-                  3級
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {SUMMARY_ROWS.map((row, i) => {
-                const isHidden =
-                  filterGrade !== "all" &&
-                  row[`g${filterGrade}` as "g1" | "g2" | "g3"] === "対象外";
-                if (isHidden) return null;
-                return (
-                  <tr
-                    key={i}
-                    className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                  >
-                    <td className="p-3 text-gray-800 font-medium border-b border-gray-100">
-                      {row.label}
-                    </td>
-                    <td className="p-3 text-center border-b border-gray-100 whitespace-nowrap">
-                      <CellBadge text={row.g1} />
-                    </td>
-                    <td className="p-3 text-center border-b border-gray-100 whitespace-nowrap">
-                      <CellBadge text={row.g2} />
-                    </td>
-                    <td className="p-3 text-center border-b border-gray-100 whitespace-nowrap">
-                      <CellBadge text={row.g3} />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </section>
-
-        {/* ── カテゴリ別詳細 ── */}
-        {CATEGORIES.map((cat) => {
-          // Filter items by grade if filter is active
-          if (filterGrade === "all") {
-            return <CategorySection key={cat.id} category={cat} />;
-          }
-          const gradeKey = `g${filterGrade}` as "g1" | "g2" | "g3";
-          const filtered = cat.items.filter(
-            (item) =>
-              !item.mentalGrade || item.mentalGrade[gradeKey] !== "none",
-          );
-          if (filtered.length === 0) return null;
-          return (
-            <CategorySection
-              key={cat.id}
-              category={{ ...cat, items: filtered }}
-            />
-          );
-        })}
-
-        {/* ── 交通機関の重要注意事項 ── */}
-        <section
-          className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 text-base text-amber-900 space-y-3"
-          aria-label="精神手帳の交通機関割引に関する重要注意事項"
-        >
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <CircleAlert size={22} aria-hidden />
-            精神手帳の交通機関割引に関する重要注意事項
-          </h3>
-          <ul className="list-disc list-inside space-y-2 text-sm">
-            <li>
-              大手私鉄・JRの割引は「介護者同乗 or
-              101km以上の単独乗車」が基本条件であり、
-              <strong>
-                日常の短距離通勤・通学には割引が適用されにくい
-              </strong>
-              のが最大の課題です。
-            </li>
-            <li>
-              精神手帳は
-              <strong>
-                障害者割引用ICカード（スルッとKANSAI・ICOCA等）に非対応
-              </strong>
-              。窓口での切符購入が必要です。
-            </li>
-            <li>
-              <strong>大阪市民であれば、大阪市の福祉措置（無料乗車証）が最も有利</strong>
-              。Osaka Metro・大阪シティバスが2級で無料、3級でも5割引になります。
-            </li>
-          </ul>
-        </section>
-
-        {/* ── 情報源 ── */}
-        <section
-          className="bg-white rounded-2xl shadow-lg p-6 space-y-3"
-          aria-label="情報源・参考リンク"
-        >
-          <h2 className="text-xl font-bold flex items-center gap-2 text-gray-900">
-            <ExternalLink size={22} aria-hidden className="text-indigo-600" />
-            情報源・参考リンク
-          </h2>
-          <ul className="space-y-1.5 text-sm">
-            {[
-              {
-                text: "大阪市 精神障がい者保健福祉手帳による各種の支援サービス",
-                url: "https://www.city.osaka.lg.jp/kenko/page/0000561605.html",
-              },
-              {
-                text: "Osaka Metro 障がい者手帳による割引",
-                url: "https://subway.osakametro.co.jp/guide/fare/various_fares/fare_discount/josya-ryokin_waribiki.php",
-              },
-              {
-                text: "大阪市 交通機関乗車料金福祉措置",
-                url: "https://www.city.osaka.lg.jp/fukushi/page/0000007635.html",
-              },
-              {
-                text: "大阪市 重度障がい者医療費の助成",
-                url: "https://www.city.osaka.lg.jp/fukushi/page/0000369437.html",
-              },
-              {
-                text: "大阪市 特別障がい者手当等",
-                url: "https://www.city.osaka.lg.jp/fukushi/page/0000007154.html",
-              },
-              {
-                text: "大阪市 重度障がい者等タクシー料金給付",
-                url: "https://www.city.osaka.lg.jp/fukushi/page/0000007578.html",
-              },
-              {
-                text: "大阪府 精神障害者に対する旅客運賃の割引について",
-                url: "https://www.pref.osaka.lg.jp/o100220/mtetyo/ryokaku.html",
-              },
-            ].map((link, i) => (
-              <li key={i}>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-indigo-600 hover:text-indigo-800 underline inline-flex items-center gap-1"
+          {/* ── Filter ── */}
+          <section
+            className="card-soft p-5"
+            aria-label="精神手帳等級フィルター"
+          >
+            <p className="mb-3 flex items-center gap-2 text-base font-bold text-slate-700">
+              <Filter size={18} aria-hidden className="text-brand-700" />
+              精神障害者保健福祉手帳の等級で絞り込み
+            </p>
+            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="等級フィルター">
+              {(
+                [
+                  { v: "all", l: "すべて表示" },
+                  { v: "1", l: "1級" },
+                  { v: "2", l: "2級" },
+                  { v: "3", l: "3級" },
+                ] as const
+              ).map((opt) => (
+                <button
+                  key={opt.v}
+                  type="button"
+                  role="radio"
+                  aria-checked={filterGrade === opt.v}
+                  onClick={() => setFilterGrade(opt.v)}
+                  className={`min-h-[44px] min-w-[44px] rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${
+                    filterGrade === opt.v
+                      ? "bg-brand-800 text-white shadow-md"
+                      : "border border-gray-200 bg-white text-slate-600 hover:border-brand-600 hover:text-brand-800"
+                  }`}
                 >
-                  {link.text}
-                  <ExternalLink size={12} aria-hidden />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+                  {opt.l}
+                </button>
+              ))}
+            </div>
+          </section>
 
-        {/* ── 免責事項 ── */}
-        <section
-          className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 text-base text-amber-900 space-y-2"
-          aria-label="免責事項"
-        >
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <CircleAlert size={22} aria-hidden />
-            ご利用にあたって
-          </h3>
-          <ul className="list-disc list-inside space-y-1 text-sm">
-            <li>
-              本ページの情報は2025年〜2026年初頭の調査時点のものです。制度は随時変更される可能性があります。
-            </li>
-            <li>
-              実際にご利用の際は各機関の公式サイトまたは窓口で最新情報をご確認ください。
-            </li>
-            <li>
-              Osaka
-              Metroの精神手帳割引は2027年3月31日までの暫定措置とされており、今後の動向に注意が必要です。
-            </li>
-            <li>
-              「大阪市民限定」の制度は大阪市に住民登録がある方のみ対象です。
-            </li>
-          </ul>
-        </section>
+          {/* ── Summary table ── */}
+          <section
+            className="card-soft overflow-x-auto p-5"
+            aria-label="精神手帳 等級別まとめ"
+          >
+            <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-800">
+              <TableProperties size={20} aria-hidden className="text-brand-700" />
+              精神障害者保健福祉手帳 等級別まとめ
+            </h2>
+            <table className="w-full text-sm" role="table">
+              <thead>
+                <tr className="border-b-2 border-brand-100 bg-brand-50">
+                  <th
+                    scope="col"
+                    className="p-3 text-left font-bold text-slate-700"
+                  >
+                    制度
+                  </th>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap p-3 text-center font-bold text-slate-700"
+                  >
+                    1級
+                  </th>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap p-3 text-center font-bold text-slate-700"
+                  >
+                    2級
+                  </th>
+                  <th
+                    scope="col"
+                    className="whitespace-nowrap p-3 text-center font-bold text-slate-700"
+                  >
+                    3級
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {SUMMARY_ROWS.map((row, i) => {
+                  if (
+                    filterGrade !== "all" &&
+                    row[`g${filterGrade}` as "g1" | "g2" | "g3"] === "対象外"
+                  ) {
+                    return null;
+                  }
+                  return (
+                    <tr
+                      key={i}
+                      className={`border-b border-gray-100 transition-colors hover:bg-brand-50/50 ${
+                        i % 2 === 0 ? "bg-white" : "bg-gray-50/60"
+                      }`}
+                    >
+                      <td className="p-3 font-medium text-slate-700">
+                        {row.label}
+                      </td>
+                      <td className="whitespace-nowrap p-3 text-center">
+                        <CellBadge text={row.g1} />
+                      </td>
+                      <td className="whitespace-nowrap p-3 text-center">
+                        <CellBadge text={row.g2} />
+                      </td>
+                      <td className="whitespace-nowrap p-3 text-center">
+                        <CellBadge text={row.g3} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </section>
+
+          {/* ── Category detail sections ── */}
+          {CATEGORIES.map((cat) => {
+            let items = cat.items;
+            if (filterGrade !== "all") {
+              const gk = `g${filterGrade}` as "g1" | "g2" | "g3";
+              items = cat.items.filter(
+                (item) => !item.mentalGrade || item.mentalGrade[gk] !== "none",
+              );
+            }
+            if (items.length === 0) return null;
+            return (
+              <div key={cat.id} id={`cat-${cat.id}`}>
+                <CategorySection category={{ ...cat, items }} />
+              </div>
+            );
+          })}
+
+          {/* ── Important notice (transport) ── */}
+          <section
+            className="rounded-xl border border-warn-100 bg-warn-50 p-5"
+            aria-label="精神手帳の交通機関割引に関する重要注意事項"
+          >
+            <h3 className="mb-3 flex items-center gap-2 text-base font-bold text-warn-700">
+              <CircleAlert size={20} aria-hidden />
+              精神手帳の交通機関割引に関する重要注意事項
+            </h3>
+            <ul className="list-inside list-disc space-y-2 text-sm leading-relaxed text-slate-700">
+              <li>
+                大手私鉄・JRの割引は「介護者同乗 or
+                101km以上の単独乗車」が基本条件であり、
+                <strong className="text-slate-900">
+                  日常の短距離通勤・通学には割引が適用されにくい
+                </strong>
+                のが最大の課題です。
+              </li>
+              <li>
+                精神手帳は
+                <strong className="text-slate-900">
+                  障害者割引用ICカード（スルッとKANSAI・ICOCA等）に非対応
+                </strong>
+                。窓口での切符購入が必要です。
+              </li>
+              <li>
+                <strong className="text-slate-900">
+                  大阪市民であれば、大阪市の福祉措置（無料乗車証）が最も有利
+                </strong>
+                。Osaka Metro・大阪シティバスが2級で無料、3級でも5割引になります。
+              </li>
+            </ul>
+          </section>
+
+          {/* ── Sources ── */}
+          <section className="card-soft p-5" aria-label="情報源・参考リンク">
+            <h2 className="mb-3 flex items-center gap-2 text-lg font-bold text-slate-800">
+              <ExternalLink size={20} aria-hidden className="text-brand-700" />
+              情報源・参考リンク
+            </h2>
+            <ul className="space-y-2">
+              {[
+                {
+                  text: "大阪市 精神障がい者保健福祉手帳による各種の支援サービス",
+                  url: "https://www.city.osaka.lg.jp/kenko/page/0000561605.html",
+                },
+                {
+                  text: "Osaka Metro 障がい者手帳による割引",
+                  url: "https://subway.osakametro.co.jp/guide/fare/various_fares/fare_discount/josya-ryokin_waribiki.php",
+                },
+                {
+                  text: "大阪市 交通機関乗車料金福祉措置",
+                  url: "https://www.city.osaka.lg.jp/fukushi/page/0000007635.html",
+                },
+                {
+                  text: "大阪市 重度障がい者医療費の助成",
+                  url: "https://www.city.osaka.lg.jp/fukushi/page/0000369437.html",
+                },
+                {
+                  text: "大阪市 特別障がい者手当等",
+                  url: "https://www.city.osaka.lg.jp/fukushi/page/0000007154.html",
+                },
+                {
+                  text: "大阪市 重度障がい者等タクシー料金給付",
+                  url: "https://www.city.osaka.lg.jp/fukushi/page/0000007578.html",
+                },
+                {
+                  text: "大阪府 精神障害者に対する旅客運賃の割引について",
+                  url: "https://www.pref.osaka.lg.jp/o100220/mtetyo/ryokaku.html",
+                },
+              ].map((link, i) => (
+                <li key={i}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 py-2 text-sm font-medium text-brand-700 underline decoration-brand-200 underline-offset-2 transition-colors hover:bg-brand-50 hover:text-brand-800 hover:decoration-brand-700"
+                  >
+                    {link.text}
+                    <ExternalLink size={14} aria-hidden className="shrink-0" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* ── Disclaimer ── */}
+          <section
+            className="rounded-xl border border-gray-200 bg-gray-50 p-5"
+            aria-label="免責事項"
+          >
+            <h3 className="mb-2 flex items-center gap-2 text-base font-bold text-slate-700">
+              <Info size={18} aria-hidden />
+              ご利用にあたって
+            </h3>
+            <ul className="list-inside list-disc space-y-1 text-sm leading-relaxed text-slate-600">
+              <li>
+                本ページの情報は2025年〜2026年初頭の調査時点のものです。制度は随時変更される可能性があります。
+              </li>
+              <li>
+                実際にご利用の際は各機関の公式サイトまたは窓口で最新情報をご確認ください。
+              </li>
+              <li>
+                Osaka Metroの精神手帳割引は2027年3月31日までの暫定措置とされており、今後の動向に注意が必要です。
+              </li>
+              <li>
+                「大阪市民限定」の制度は大阪市に住民登録がある方のみ対象です。
+              </li>
+            </ul>
+          </section>
+        </div>
       </main>
 
-      <footer className="bg-gray-800 text-gray-400 text-center py-4 text-sm">
+      {/* ── Footer ── */}
+      <footer className="border-t border-gray-200 bg-white py-6 text-center text-sm text-slate-500">
         <p>大阪 障害者割引・優待ガイド &copy; 2025</p>
       </footer>
     </div>
-  );
-}
-
-// Helper for summary table cells
-function CellBadge({ text }: { text: string }) {
-  const isNegative = text === "対象外";
-  const isPositive =
-    text.includes("対象") ||
-    text.includes("無料") ||
-    text.includes("割引") ||
-    text.includes("半額") ||
-    text.includes("1,000円") ||
-    text.includes("万円");
-  return (
-    <span
-      className={`inline-block px-2 py-0.5 rounded text-xs font-bold ${
-        isNegative
-          ? "bg-gray-100 text-gray-400"
-          : isPositive
-            ? "bg-emerald-100 text-emerald-800"
-            : "bg-gray-100 text-gray-600"
-      }`}
-    >
-      {text}
-    </span>
   );
 }
