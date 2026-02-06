@@ -330,7 +330,7 @@ function TransitCalc() {
         <Calculator size={32} className="text-brand-700" aria-hidden />
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-            障害者割引運賃シミュレーター
+            運賃シミュレーター
           </h1>
           <p className="text-sm text-slate-500 mt-0.5">
             鉄道・飛行機の割引運賃をかんたん比較

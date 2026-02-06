@@ -824,10 +824,10 @@ export default function OsakaBenefits({
             </span>
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-                大阪 障害者割引・優待ガイド
+                大阪の制度情報
               </h1>
               <p className="mt-1 text-base text-brand-100">
-                大阪府・大阪市で使える障害者手帳の割引・優待制度まとめ
+                大阪府・大阪市で使える障害者手帳の割引・優待制度
               </p>
             </div>
           </div>
@@ -1082,7 +1082,7 @@ export default function OsakaBenefits({
 
       {/* ── Footer ── */}
       <footer className="border-t border-gray-200 bg-white py-6 text-center text-sm text-slate-500">
-        <p>大阪 障害者割引・優待ガイド &copy; 2025</p>
+        <p>生活支援ガイド &copy; 2025</p>
       </footer>
     </div>
   );
