@@ -11,6 +11,10 @@ import {
   TrendingDown,
   Trophy,
   TicketPercent,
+  Search,
+  MapPin,
+  Loader2,
+  ArrowRight,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -41,21 +45,13 @@ interface AirFareInput {
 }
 
 interface RailFareResult {
-  /** 通常料金合計（乗車券 + 特急券）× 人数 */
   originalFare: number;
-  /** 割引後の乗車券（本人） */
   discountedTicket: number;
-  /** 特急券（割引なし） */
   expressFare: number;
-  /** 本人合計 */
   discountedFare: number;
-  /** 介護者合計 (null = 介護者なし) */
   caregiverFare: number | null;
-  /** 介護者の乗車券 */
   caregiverTicket: number | null;
-  /** 総合計 */
   totalFare: number;
-  /** おトク額 */
   savings: number;
   discountApplied: boolean;
   description: string;
@@ -63,44 +59,203 @@ interface RailFareResult {
 
 interface AirFareResult {
   originalFare: number;
-  /** 障害者割引後の本人運賃 */
   discountedFare: number;
   caregiverFare: number | null;
   totalFare: number;
   savings: number;
   discountApplied: boolean;
   description: string;
-  /** 早期割引の本人運賃 */
   earlyBirdFare: number;
-  /** 早期割引を含めた合計 */
   earlyBirdTotal: number;
-  /** 早期割引のおトク額 */
   earlyBirdSavings: number;
-  /** 障害者割引の方が安い？ */
   disabilityIsCheaper: boolean;
 }
 
 // ---------------------------------------------------------------------------
-// Fare Calculation – loosely‑coupled for future API integration
+// Route Search API – loosely‑coupled for future real API integration
 // ---------------------------------------------------------------------------
 
+/** 経路検索の結果 */
+interface RouteSearchResult {
+  /** 出発駅 */
+  from: string;
+  /** 到着駅 */
+  to: string;
+  /** 乗車券（大人・片道） */
+  ticketFare: number;
+  /** 特急券（大人・片道）。在来線のみの場合は 0 */
+  expressFare: number;
+  /** 営業キロ */
+  distanceKm: number;
+  /** データソース */
+  source: "api" | "mock";
+}
+
 /**
- * 10 円未満切り捨て
+ * モックデータ: 主要区間の運賃テーブル
+ * 将来 API 連携時にこのテーブルは不要になる
  */
+const MOCK_ROUTES: Record<string, RouteSearchResult> = {
+  "東京-大阪": {
+    from: "東京",
+    to: "大阪",
+    ticketFare: 8910,
+    expressFare: 4960,
+    distanceKm: 556,
+    source: "mock",
+  },
+  "東京-名古屋": {
+    from: "東京",
+    to: "名古屋",
+    ticketFare: 6380,
+    expressFare: 4180,
+    distanceKm: 366,
+    source: "mock",
+  },
+  "東京-仙台": {
+    from: "東京",
+    to: "仙台",
+    ticketFare: 6050,
+    expressFare: 4430,
+    distanceKm: 352,
+    source: "mock",
+  },
+  "東京-新潟": {
+    from: "東京",
+    to: "新潟",
+    ticketFare: 5720,
+    expressFare: 4510,
+    distanceKm: 334,
+    source: "mock",
+  },
+  "東京-広島": {
+    from: "東京",
+    to: "広島",
+    ticketFare: 12100,
+    expressFare: 5490,
+    distanceKm: 894,
+    source: "mock",
+  },
+  "東京-博多": {
+    from: "東京",
+    to: "博多",
+    ticketFare: 13870,
+    expressFare: 6250,
+    distanceKm: 1175,
+    source: "mock",
+  },
+  "東京-金沢": {
+    from: "東京",
+    to: "金沢",
+    ticketFare: 7480,
+    expressFare: 6930,
+    distanceKm: 450,
+    source: "mock",
+  },
+  "大阪-博多": {
+    from: "大阪",
+    to: "博多",
+    ticketFare: 9790,
+    expressFare: 5490,
+    distanceKm: 622,
+    source: "mock",
+  },
+  "名古屋-大阪": {
+    from: "名古屋",
+    to: "大阪",
+    ticketFare: 3410,
+    expressFare: 3070,
+    distanceKm: 190,
+    source: "mock",
+  },
+  "東京-京都": {
+    from: "東京",
+    to: "京都",
+    ticketFare: 8360,
+    expressFare: 4960,
+    distanceKm: 476,
+    source: "mock",
+  },
+};
+
+/**
+ * 経路検索 — 駅すぱあと WebサービスAPI を想定した fetch 関数。
+ *
+ * - 環境変数 VITE_EKISPERT_API_KEY が設定されていれば実APIを呼ぶ
+ * - 未設定の場合はモックデータを返す
+ */
+export async function searchRoute(
+  from: string,
+  to: string,
+): Promise<RouteSearchResult> {
+  const apiKey = import.meta.env.VITE_EKISPERT_API_KEY as string | undefined;
+
+  if (apiKey) {
+    // --- 実 API 呼び出し（駅すぱあと Webサービス想定） ---
+    const url = new URL(
+      "https://api.ekispert.jp/v1/json/search/course/light",
+    );
+    url.searchParams.set("key", apiKey);
+    url.searchParams.set("from", from);
+    url.searchParams.set("to", to);
+
+    const res = await fetch(url.toString());
+    if (!res.ok) {
+      throw new Error(`API error: ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+
+    // レスポンス構造を解析して必要な値を抽出（実APIの仕様に合わせて調整が必要）
+    const course = data?.ResultSet?.Course?.[0];
+    if (!course) {
+      throw new Error("経路が見つかりませんでした");
+    }
+
+    const price = course.Price ?? [];
+    const ticketFare =
+      price.find((p: { kind: string }) => p.kind === "FareSummary")
+        ?.Oneway ?? 0;
+    const expressFare =
+      price.find(
+        (p: { kind: string }) => p.kind === "ChargeSummary",
+      )?.Oneway ?? 0;
+    const distanceKm = Number(course.Distance) || 0;
+
+    return {
+      from,
+      to,
+      ticketFare: Number(ticketFare),
+      expressFare: Number(expressFare),
+      distanceKm,
+      source: "api",
+    };
+  }
+
+  // --- モックデータ ---
+  // 正引き・逆引き両方で検索
+  const key = `${from}-${to}`;
+  const reverseKey = `${to}-${from}`;
+  const found = MOCK_ROUTES[key] ?? MOCK_ROUTES[reverseKey];
+
+  if (found) {
+    // 逆引きの場合は from/to を入れ替え
+    return { ...found, from, to };
+  }
+
+  throw new Error(
+    `「${from}→${to}」のモックデータがありません。対応区間: ${Object.keys(MOCK_ROUTES).join(", ")}`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Fare Calculation
+// ---------------------------------------------------------------------------
+
 function floorTo10(amount: number): number {
   return Math.floor(amount / 10) * 10;
 }
 
-/**
- * 鉄道運賃の計算（JR準拠）
- *
- * 障害者割引は「乗車券」のみに適用。特急券は割引対象外。
- *
- * - 第1種 + 介護者: 乗車券を本人・介護者ともに50%OFF（距離制限なし）
- * - 第1種 単独 100km超: 乗車券を本人50%OFF
- * - 第2種 100km超: 乗車券を本人のみ50%OFF
- * - 精神障害者 100km超: 乗車券を本人50%OFF（2025年4月改定）
- */
 export function calculateRailFare(input: RailFareInput): RailFareResult {
   const { disabilityType, hasCaregiver, distanceKm, ticketFare, expressFare } =
     input;
@@ -132,7 +287,6 @@ export function calculateRailFare(input: RailFareInput): RailFareResult {
           "第1種障害者: 単独乗車で100km以下のため割引適用なし";
       }
       break;
-
     case "type2":
       if (distanceKm > 100) {
         discountedTicket = halfTicket;
@@ -143,7 +297,6 @@ export function calculateRailFare(input: RailFareInput): RailFareResult {
         description = "第2種障害者: 100km以下のため割引適用なし";
       }
       break;
-
     case "mental":
       if (distanceKm > 100) {
         discountedTicket = halfTicket;
@@ -161,7 +314,6 @@ export function calculateRailFare(input: RailFareInput): RailFareResult {
   const caregiverFare = hasCaregiver
     ? (caregiverTicket ?? ticketFare) + expressFare
     : null;
-
   const totalFare = discountedFare + (caregiverFare ?? 0);
   const savings = originalTotal - totalFare;
 
@@ -179,11 +331,6 @@ export function calculateRailFare(input: RailFareInput): RailFareResult {
   };
 }
 
-/**
- * 航空運賃の計算
- *
- * 障害者割引と早期割引を比較し、安い方を強調表示。
- */
 export function calculateAirFare(input: AirFareInput): AirFareResult {
   const { hasCaregiver, baseFare, airlineDiscountPct, earlyBirdFare } = input;
 
@@ -197,10 +344,8 @@ export function calculateAirFare(input: AirFareInput): AirFareResult {
   const totalFare = discountedFare + (caregiverFare ?? 0);
   const savings = originalTotal - totalFare;
 
-  // 早期割引: 本人のみ適用（介護者は通常運賃）
   const earlyBirdTotal = earlyBirdFare + (caregiverFare ?? 0);
   const earlyBirdSavings = originalTotal - earlyBirdTotal;
-
   const disabilityIsCheaper = totalFare <= earlyBirdTotal;
 
   return {
@@ -236,7 +381,6 @@ function formatYen(n: number): string {
 // Components
 // ---------------------------------------------------------------------------
 
-/** 節約額バッジ（カード右上） */
 function SavingsBadge({ savings }: { savings: number }) {
   if (savings <= 0) return null;
   return (
@@ -250,8 +394,13 @@ function SavingsBadge({ savings }: { savings: number }) {
   );
 }
 
-/** 鉄道カード */
-function RailResultCard({ result }: { result: RailFareResult }) {
+function RailResultCard({
+  result,
+  routeLabel,
+}: {
+  result: RailFareResult;
+  routeLabel: string | null;
+}) {
   return (
     <div
       className="relative rounded-2xl border-2 border-indigo-300 bg-white shadow-lg p-6 flex flex-col gap-4"
@@ -261,15 +410,21 @@ function RailResultCard({ result }: { result: RailFareResult }) {
       <SavingsBadge savings={result.savings} />
 
       <div className="flex items-center gap-3">
-        <Train size={30} className="text-indigo-700" aria-hidden />
-        <h2 className="text-2xl font-bold text-gray-900">鉄道（JR準拠）</h2>
+        <Train size={30} className="text-indigo-700 shrink-0" aria-hidden />
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">鉄道（JR準拠）</h2>
+          {routeLabel && (
+            <p className="text-sm text-indigo-600 font-semibold">
+              {routeLabel}
+            </p>
+          )}
+        </div>
       </div>
 
       <p className="text-base text-gray-700 leading-relaxed">
         {result.description}
       </p>
 
-      {/* 通常料金 vs 割引後料金 */}
       <div className="grid grid-cols-2 gap-4 text-center">
         <div className="rounded-xl bg-gray-100 p-4">
           <p className="text-sm font-semibold text-gray-500 mb-1">通常料金</p>
@@ -298,7 +453,6 @@ function RailResultCard({ result }: { result: RailFareResult }) {
         </div>
       </div>
 
-      {/* 内訳 */}
       <div className="text-base text-gray-700 space-y-1 border-t border-gray-200 pt-3">
         <p className="font-semibold text-gray-900 mb-1">内訳（本人）</p>
         <p>
@@ -346,7 +500,6 @@ function RailResultCard({ result }: { result: RailFareResult }) {
   );
 }
 
-/** 航空カード（障害者割引 vs 早期割引の比較付き） */
 function AirResultCard({ result }: { result: AirFareResult }) {
   const bestSavings = Math.max(result.savings, result.earlyBirdSavings);
 
@@ -367,7 +520,6 @@ function AirResultCard({ result }: { result: AirFareResult }) {
         {result.description}
       </p>
 
-      {/* 通常料金 */}
       <div className="rounded-xl bg-gray-100 p-4 text-center">
         <p className="text-sm font-semibold text-gray-500 mb-1">通常料金</p>
         <p className="text-2xl font-bold text-gray-800">
@@ -375,9 +527,7 @@ function AirResultCard({ result }: { result: AirFareResult }) {
         </p>
       </div>
 
-      {/* 障害者割引 vs 早期割引 比較 */}
       <div className="grid grid-cols-2 gap-4 text-center">
-        {/* 障害者割引 */}
         <div
           className={`rounded-xl p-4 border-2 transition-colors ${
             result.disabilityIsCheaper
@@ -409,7 +559,6 @@ function AirResultCard({ result }: { result: AirFareResult }) {
           </p>
         </div>
 
-        {/* 早期割引 */}
         <div
           className={`rounded-xl p-4 border-2 transition-colors ${
             !result.disabilityIsCheaper
@@ -423,9 +572,7 @@ function AirResultCard({ result }: { result: AirFareResult }) {
               最安値
             </p>
           )}
-          <p className="text-sm font-semibold text-gray-500 mb-1">
-            早期割引
-          </p>
+          <p className="text-sm font-semibold text-gray-500 mb-1">早期割引</p>
           <p
             className={`text-2xl font-bold flex items-center justify-center gap-1 ${
               !result.disabilityIsCheaper ? "text-green-700" : "text-gray-800"
@@ -442,7 +589,6 @@ function AirResultCard({ result }: { result: AirFareResult }) {
         </div>
       </div>
 
-      {/* 介護者がいる場合の注記 */}
       {result.caregiverFare !== null && (
         <p className="text-sm text-gray-500">
           ※ 介護者は通常運賃（{formatYen(result.caregiverFare)}
@@ -467,42 +613,65 @@ function AirResultCard({ result }: { result: AirFareResult }) {
 // ---------------------------------------------------------------------------
 
 export default function App() {
+  // 共通
   const [disabilityType, setDisabilityType] = useState<DisabilityType>("type1");
   const [hasCaregiver, setHasCaregiver] = useState(false);
   const [distanceKm, setDistanceKm] = useState(150);
 
-  // 鉄道: 乗車券と特急券を分離
-  const [ticketFare, setTicketFare] = useState(5000);
-  const [expressFare, setExpressFare] = useState(3000);
+  // 駅名検索
+  const [fromStation, setFromStation] = useState("東京");
+  const [toStation, setToStation] = useState("大阪");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [routeLabel, setRouteLabel] = useState<string | null>(null);
+
+  // 鉄道
+  const [ticketFare, setTicketFare] = useState(8910);
+  const [expressFare, setExpressFare] = useState(4960);
 
   // 航空
   const [airBaseFare, setAirBaseFare] = useState(30000);
   const [airlineDiscountPct, setAirlineDiscountPct] = useState(50);
   const [earlyBirdFare, setEarlyBirdFare] = useState(14000);
 
-  const buildRailInput = useCallback(
-    (): RailFareInput => ({
-      disabilityType,
-      hasCaregiver,
-      distanceKm,
-      ticketFare,
-      expressFare,
-    }),
-    [disabilityType, hasCaregiver, distanceKm, ticketFare, expressFare],
-  );
+  const handleSearch = useCallback(async () => {
+    if (!fromStation.trim() || !toStation.trim()) {
+      setSearchError("出発駅と到着駅を入力してください");
+      return;
+    }
+    setIsSearching(true);
+    setSearchError(null);
+    try {
+      const result = await searchRoute(fromStation.trim(), toStation.trim());
+      setTicketFare(result.ticketFare);
+      setExpressFare(result.expressFare);
+      setDistanceKm(result.distanceKm);
+      setRouteLabel(
+        `${result.from} → ${result.to}（${result.distanceKm}km）${result.source === "mock" ? " [デモデータ]" : ""}`,
+      );
+    } catch (err) {
+      setSearchError(
+        err instanceof Error ? err.message : "検索中にエラーが発生しました",
+      );
+    } finally {
+      setIsSearching(false);
+    }
+  }, [fromStation, toStation]);
 
-  const buildAirInput = useCallback(
-    (): AirFareInput => ({
-      hasCaregiver,
-      baseFare: airBaseFare,
-      airlineDiscountPct,
-      earlyBirdFare,
-    }),
-    [hasCaregiver, airBaseFare, airlineDiscountPct, earlyBirdFare],
-  );
+  const railResult = calculateRailFare({
+    disabilityType,
+    hasCaregiver,
+    distanceKm,
+    ticketFare,
+    expressFare,
+  });
 
-  const railResult = calculateRailFare(buildRailInput());
-  const airResult = calculateAirFare(buildAirInput());
+  const airResult = calculateAirFare({
+    hasCaregiver,
+    baseFare: airBaseFare,
+    airlineDiscountPct,
+    earlyBirdFare,
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 text-gray-900">
@@ -522,7 +691,7 @@ export default function App() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        {/* ── 共通入力セクション ── */}
+        {/* ── 共通条件 ── */}
         <section
           className="bg-white rounded-2xl shadow-lg p-6 space-y-6"
           aria-label="共通条件の入力フォーム"
@@ -588,48 +757,118 @@ export default function App() {
               )}
             </span>
           </div>
+        </section>
 
-          {/* 移動距離 */}
-          <div>
-            <label
-              htmlFor="distance"
-              className="block text-lg font-semibold mb-1"
-            >
-              移動距離（km）
-            </label>
-            <div className="flex items-center gap-4">
-              <input
-                id="distance"
-                type="range"
-                min={10}
-                max={1500}
-                step={10}
-                value={distanceKm}
-                onChange={(e) => setDistanceKm(Number(e.target.value))}
-                className="flex-1 h-3 rounded-full accent-indigo-600"
-              />
-              <input
-                type="number"
-                min={1}
-                value={distanceKm}
-                onChange={(e) =>
-                  setDistanceKm(Math.max(1, Number(e.target.value)))
-                }
-                aria-label="移動距離（km）の数値入力"
-                className="w-24 text-center text-xl font-bold border-2 border-gray-300 rounded-xl py-2 focus:outline-none focus:ring-4 focus:ring-indigo-400"
-              />
-              <span className="text-lg font-semibold">km</span>
-            </div>
-            {distanceKm <= 100 && (
-              <p
-                className="mt-2 text-base text-amber-700 flex items-center gap-1"
-                role="alert"
+        {/* ── 駅名検索セクション ── */}
+        <section
+          className="bg-white rounded-2xl shadow-lg p-6 space-y-6"
+          aria-label="駅名から運賃を検索"
+        >
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Search size={24} aria-hidden />
+            駅名から運賃を検索
+          </h2>
+          <p className="text-sm text-gray-500">
+            出発駅と到着駅を入力すると、乗車券・特急券・営業キロを自動取得します。
+            <span className="text-amber-600 font-semibold">
+              （現在はデモデータで動作）
+            </span>
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-4">
+            <div className="flex-1">
+              <label
+                htmlFor="fromStation"
+                className="block text-lg font-semibold mb-1"
               >
-                <CircleAlert size={18} aria-hidden />
-                100km以下の場合、一部の割引が適用されません
-              </p>
-            )}
+                <MapPin
+                  size={18}
+                  className="inline-block mr-1 -mt-0.5 text-indigo-600"
+                  aria-hidden
+                />
+                出発駅
+              </label>
+              <input
+                id="fromStation"
+                type="text"
+                value={fromStation}
+                onChange={(e) => setFromStation(e.target.value)}
+                placeholder="例: 東京"
+                className="w-full text-xl font-bold border-2 border-gray-300 rounded-xl py-2 px-4 focus:outline-none focus:ring-4 focus:ring-indigo-400"
+              />
+            </div>
+
+            <ArrowRight
+              size={28}
+              className="hidden sm:block text-gray-400 shrink-0 mb-2"
+              aria-hidden
+            />
+
+            <div className="flex-1">
+              <label
+                htmlFor="toStation"
+                className="block text-lg font-semibold mb-1"
+              >
+                <MapPin
+                  size={18}
+                  className="inline-block mr-1 -mt-0.5 text-red-500"
+                  aria-hidden
+                />
+                到着駅
+              </label>
+              <input
+                id="toStation"
+                type="text"
+                value={toStation}
+                onChange={(e) => setToStation(e.target.value)}
+                placeholder="例: 大阪"
+                className="w-full text-xl font-bold border-2 border-gray-300 rounded-xl py-2 px-4 focus:outline-none focus:ring-4 focus:ring-indigo-400"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleSearch}
+              disabled={isSearching}
+              className="px-6 py-3 rounded-xl text-lg font-bold bg-indigo-700 text-white border-2 border-indigo-700 hover:bg-indigo-800 transition-colors focus:outline-none focus:ring-4 focus:ring-indigo-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shrink-0"
+            >
+              {isSearching ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" aria-hidden />
+                  検索中…
+                </>
+              ) : (
+                <>
+                  <Search size={20} aria-hidden />
+                  検索
+                </>
+              )}
+            </button>
           </div>
+
+          {searchError && (
+            <div
+              className="rounded-xl bg-red-50 border border-red-300 p-4 text-red-800 flex items-start gap-2"
+              role="alert"
+            >
+              <CircleAlert size={20} className="shrink-0 mt-0.5" aria-hidden />
+              <p>{searchError}</p>
+            </div>
+          )}
+
+          {routeLabel && !searchError && (
+            <div className="rounded-xl bg-indigo-50 border border-indigo-200 p-4 text-indigo-800 text-base font-semibold flex items-center gap-2">
+              <Train size={20} aria-hidden />
+              {routeLabel} — 乗車券 {formatYen(ticketFare)} / 特急券{" "}
+              {formatYen(expressFare)}
+            </div>
+          )}
+
+          <p className="text-xs text-gray-400">
+            対応区間（デモ）: 東京−大阪, 東京−名古屋, 東京−仙台, 東京−新潟,
+            東京−広島, 東京−博多, 東京−金沢, 東京−京都, 大阪−博多, 名古屋−大阪
+            ※逆方向も可
+          </p>
         </section>
 
         {/* ── 鉄道入力セクション ── */}
@@ -639,13 +878,13 @@ export default function App() {
         >
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <Train size={24} className="text-indigo-700" aria-hidden />
-            鉄道運賃の入力
+            鉄道運賃（手動入力 / 検索結果を編集）
           </h2>
           <p className="text-sm text-gray-500">
-            障害者割引は「乗車券」のみに適用されます。特急券（新幹線含む）は割引対象外です。
+            駅名検索で取得した値がセットされます。手動で変更することもできます。
           </p>
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-3 gap-6">
             <div>
               <label
                 htmlFor="ticketFare"
@@ -666,7 +905,7 @@ export default function App() {
                   onChange={(e) =>
                     setTicketFare(Math.max(0, Number(e.target.value)))
                   }
-                  className="w-40 text-center text-xl font-bold border-2 border-gray-300 rounded-xl py-2 focus:outline-none focus:ring-4 focus:ring-indigo-400"
+                  className="w-full text-center text-xl font-bold border-2 border-gray-300 rounded-xl py-2 focus:outline-none focus:ring-4 focus:ring-indigo-400"
                 />
               </div>
               <p className="text-xs text-green-700 mt-1 flex items-center gap-1">
@@ -695,10 +934,41 @@ export default function App() {
                   onChange={(e) =>
                     setExpressFare(Math.max(0, Number(e.target.value)))
                   }
-                  className="w-40 text-center text-xl font-bold border-2 border-gray-300 rounded-xl py-2 focus:outline-none focus:ring-4 focus:ring-indigo-400"
+                  className="w-full text-center text-xl font-bold border-2 border-gray-300 rounded-xl py-2 focus:outline-none focus:ring-4 focus:ring-indigo-400"
                 />
               </div>
               <p className="text-xs text-gray-400 mt-1">割引対象外</p>
+            </div>
+
+            <div>
+              <label
+                htmlFor="distance"
+                className="block text-lg font-semibold mb-1"
+              >
+                営業キロ（km）
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  id="distance"
+                  type="number"
+                  min={1}
+                  value={distanceKm}
+                  onChange={(e) =>
+                    setDistanceKm(Math.max(1, Number(e.target.value)))
+                  }
+                  className="w-full text-center text-xl font-bold border-2 border-gray-300 rounded-xl py-2 focus:outline-none focus:ring-4 focus:ring-indigo-400"
+                />
+                <span className="text-lg font-semibold">km</span>
+              </div>
+              {distanceKm <= 100 && (
+                <p
+                  className="mt-1 text-xs text-amber-700 flex items-center gap-1"
+                  role="alert"
+                >
+                  <CircleAlert size={14} aria-hidden />
+                  100km以下: 一部割引なし
+                </p>
+              )}
             </div>
           </div>
         </section>
@@ -713,7 +983,6 @@ export default function App() {
             航空運賃の入力
           </h2>
 
-          {/* 航空普通運賃 */}
           <div>
             <label
               htmlFor="airBaseFare"
@@ -739,7 +1008,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* 航空割引率 */}
           <div>
             <label
               htmlFor="airDiscount"
@@ -769,7 +1037,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* 早期割引 */}
           <div className="border-t border-gray-200 pt-4">
             <label
               htmlFor="earlyBirdFare"
@@ -804,7 +1071,7 @@ export default function App() {
           <h2 className="text-2xl font-bold">計算結果</h2>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <RailResultCard result={railResult} />
+            <RailResultCard result={railResult} routeLabel={routeLabel} />
             <AirResultCard result={airResult} />
           </div>
         </section>
@@ -823,6 +1090,9 @@ export default function App() {
               本ツールはシミュレーションです。実際の運賃は各事業者にご確認ください。
             </li>
             <li>
+              駅名検索は現在デモデータで動作しています。将来的に駅すぱあとWebサービスAPI等と連携予定です。
+            </li>
+            <li>
               鉄道の障害者割引は「乗車券」のみに適用されます。特急券・グリーン券・指定席券等は割引対象外です。
             </li>
             <li>
@@ -836,7 +1106,6 @@ export default function App() {
         </section>
       </main>
 
-      {/* フッター */}
       <footer className="bg-gray-800 text-gray-400 text-center py-4 text-sm">
         <p>障害者割引運賃シミュレーター &copy; 2025</p>
       </footer>
