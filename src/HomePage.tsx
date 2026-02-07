@@ -16,6 +16,9 @@ import {
   Settings2,
   MapPin,
   Sparkles,
+  BookOpen,
+  Clock,
+  ChevronRight,
 } from "lucide-react";
 import {
   LIFE_CATEGORIES,
@@ -30,6 +33,7 @@ import {
   getDiscountForUser,
   isFacilityEligible,
 } from "./data";
+import { ALL_ARTICLES, isNewArticle, formatArticleDate } from "./articlesData";
 
 // ---------------------------------------------------------------------------
 // Icon resolver
@@ -404,9 +408,10 @@ function FacilityCard({
 interface HomePageProps {
   preferences: UserPreferences;
   onOpenPrefs: () => void;
+  onNavigate?: (page: string) => void;
 }
 
-export default function HomePage({ preferences, onOpenPrefs }: HomePageProps) {
+export default function HomePage({ preferences, onOpenPrefs, onNavigate }: HomePageProps) {
   const [activeCategory, setActiveCategory] = useState<Facility["category"] | null>(null);
   const [situationFilter, setSituationFilter] = useState<string[] | null>(null);
 
@@ -586,6 +591,68 @@ export default function HomePage({ preferences, onOpenPrefs }: HomePageProps) {
               </div>
             </div>
           ))}
+        </section>
+
+        {/* ── Latest articles ── */}
+        <section aria-label="最新コラム" className="mb-10">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-brand-700" />
+              最新コラム
+            </h2>
+            {onNavigate && (
+              <button
+                type="button"
+                onClick={() => onNavigate("articles")}
+                className="min-h-[44px] inline-flex items-center gap-0.5 px-3 py-2 rounded-lg
+                           text-xs font-bold text-brand-700 hover:bg-brand-50
+                           active:scale-[0.97] transition-all cursor-pointer"
+              >
+                すべて見る
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {ALL_ARTICLES.slice(0, 3).map((article) => (
+              <article
+                key={article.slug}
+                className="card-soft hover-lift p-4 cursor-pointer group"
+                onClick={() => onNavigate?.("articles")}
+                role="link"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onNavigate?.("articles");
+                  }
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                        {article.category}
+                      </span>
+                      {isNewArticle(article.date) && (
+                        <span className="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-500 text-white uppercase">
+                          NEW
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-sm font-bold text-slate-800 leading-snug line-clamp-2 group-hover:text-brand-700 transition-colors">
+                      {article.title}
+                    </h3>
+                    <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 mt-1.5">
+                      <Clock className="w-3 h-3" />
+                      {formatArticleDate(article.date)}
+                    </span>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 shrink-0 mt-1 group-hover:text-brand-700 transition-colors" />
+                </div>
+              </article>
+            ))}
+          </div>
         </section>
 
         {/* ── Footer ── */}

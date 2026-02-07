@@ -3,6 +3,7 @@ import {
   Home as HomeIcon,
   Building2,
   Calculator,
+  BookOpen,
   X,
   CheckCircle2,
 } from "lucide-react";
@@ -10,6 +11,7 @@ import type { UserPreferences, HandbookType, HandbookGrade } from "./data";
 import HomePage from "./HomePage";
 import OsakaBenefits from "./OsakaBenefits";
 import TransitCalc from "./TransitCalc";
+import ArticlesPage from "./ArticlesPage";
 
 // ---------------------------------------------------------------------------
 // User Preferences Context
@@ -185,13 +187,18 @@ function PreferencesModal({
 // Bottom Navigation
 // ---------------------------------------------------------------------------
 
-type Page = "home" | "osaka" | "calculator";
+type Page = "home" | "articles" | "osaka" | "calculator";
 
 const NAV_ITEMS: { page: Page; label: string; icon: React.ReactNode }[] = [
   {
     page: "home",
     label: "ホーム",
     icon: <HomeIcon size={22} aria-hidden />,
+  },
+  {
+    page: "articles",
+    label: "コラム",
+    icon: <BookOpen size={22} aria-hidden />,
   },
   {
     page: "osaka",
@@ -276,8 +283,10 @@ export default function App() {
             <HomePage
               preferences={preferences}
               onOpenPrefs={() => setShowPrefs(true)}
+              onNavigate={(p) => setPage(p as Page)}
             />
           )}
+          {page === "articles" && <ArticlesPage />}
           {page === "osaka" && (
             <OsakaBenefits onBack={() => setPage("home")} />
           )}

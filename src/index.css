@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap");
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* ── Design Tokens (Tailwind v4 theme) ── */
 @theme {
