@@ -128,7 +128,7 @@ function HeroSection({
     <section className="img-card h-[260px] sm:h-[300px] mb-8">
       <CoverImage
         src={HERO_IMAGE}
-        alt="関西の夜景"
+        alt="大阪の街並みと医療をモチーフにしたイラスト — 通天閣・道頓堀・心電図"
         gradientClass="grad-hero"
         className="absolute inset-0 w-full h-full object-cover"
       />

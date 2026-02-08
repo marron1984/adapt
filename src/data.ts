@@ -118,11 +118,10 @@ export const LIFE_CATEGORIES: LifeCategory[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Hero & city images (Unsplash — free for commercial use)
+// Hero & city images
 // ---------------------------------------------------------------------------
 
-export const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=1400&h=500&fit=crop&auto=format&q=80";
+export const HERO_IMAGE = "/images/hero-osaka-medical.svg";
 
 export interface CityImage {
   id: string;
