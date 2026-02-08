@@ -1,147 +1,237 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500" width="1400" height="500">
   <defs>
-    <!-- Main sky gradient -->
-    <linearGradient id="skyGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#e0f2fe"/>
-      <stop offset="40%" stop-color="#bae6fd"/>
-      <stop offset="100%" stop-color="#7dd3fc"/>
+    <!-- Deep medical blue gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#0f2557"/>
+      <stop offset="50%" stop-color="#1a3a7a"/>
+      <stop offset="100%" stop-color="#1e40af"/>
     </linearGradient>
-    <!-- Water gradient -->
-    <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.5"/>
-      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.3"/>
-    </linearGradient>
-    <!-- Building glow -->
-    <linearGradient id="bldGlow" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#1e40af" stop-opacity="0.12"/>
+    <!-- Accent glow -->
+    <radialGradient id="glow1" cx="0.7" cy="0.4" r="0.5">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
       <stop offset="100%" stop-color="#1e40af" stop-opacity="0"/>
-    </linearGradient>
-    <!-- Cross glow -->
-    <radialGradient id="crossGlow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
     </radialGradient>
-    <!-- Soft vignette overlay for text readability -->
+    <radialGradient id="glow2" cx="0.2" cy="0.6" r="0.4">
+      <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#1e40af" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Shield gradient -->
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.15"/>
+    </linearGradient>
+    <!-- ECG line glow -->
+    <filter id="ecgGlow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Bottom overlay for text -->
     <linearGradient id="textOverlay" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#0f172a" stop-opacity="0.45"/>
-      <stop offset="50%" stop-color="#0f172a" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#0a1628" stop-opacity="0.7"/>
+      <stop offset="40%" stop-color="#0f2557" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0f2557" stop-opacity="0"/>
     </linearGradient>
   </defs>
 
-  <!-- Background sky -->
-  <rect width="1400" height="500" fill="url(#skyGrad)"/>
+  <!-- ═══ Background ═══ -->
+  <rect width="1400" height="500" fill="url(#bg)"/>
+  <rect width="1400" height="500" fill="url(#glow1)"/>
+  <rect width="1400" height="500" fill="url(#glow2)"/>
 
-  <!-- Subtle grid dots (clinical feel) -->
-  <g opacity="0.08">
-    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-      <circle cx="20" cy="20" r="1.2" fill="#1e40af"/>
-    </pattern>
-    <rect width="1400" height="500" fill="url(#dots)"/>
+  <!-- ═══ Hexagonal grid pattern (molecular / clinical) ═══ -->
+  <g opacity="0.06" stroke="#93c5fd" stroke-width="0.6" fill="none">
+    <!-- Row 1 -->
+    <polygon points="100,40 120,28 140,40 140,60 120,72 100,60"/>
+    <polygon points="140,40 160,28 180,40 180,60 160,72 140,60"/>
+    <polygon points="180,40 200,28 220,40 220,60 200,72 180,60"/>
+    <polygon points="60,70 80,58 100,70 100,90 80,102 60,90"/>
+    <polygon points="100,70 120,58 140,70 140,90 120,102 100,90"/>
+    <polygon points="140,70 160,58 180,70 180,90 160,102 140,90"/>
+    <!-- Row 2 scattered -->
+    <polygon points="1150,60 1170,48 1190,60 1190,80 1170,92 1150,80"/>
+    <polygon points="1190,60 1210,48 1230,60 1230,80 1210,92 1190,80"/>
+    <polygon points="1230,60 1250,48 1270,60 1270,80 1250,92 1230,80"/>
+    <polygon points="1170,90 1190,78 1210,90 1210,110 1190,122 1170,110"/>
+    <polygon points="1210,90 1230,78 1250,90 1250,110 1230,122 1210,110"/>
+    <!-- Bottom scattered -->
+    <polygon points="300,380 320,368 340,380 340,400 320,412 300,400"/>
+    <polygon points="340,380 360,368 380,380 380,400 360,412 340,400"/>
+    <polygon points="1050,350 1070,338 1090,350 1090,370 1070,382 1050,370"/>
+    <polygon points="1090,350 1110,338 1130,350 1130,370 1110,382 1090,370"/>
   </g>
 
-  <!-- ═══ Dotonbori canal curve ═══ -->
-  <path d="M0 420 Q200 380, 400 400 T800 390 T1200 405 T1400 395 L1400 500 L0 500Z"
-        fill="url(#waterGrad)"/>
-  <!-- Canal ripple lines -->
-  <g stroke="#60a5fa" stroke-width="0.8" fill="none" opacity="0.3">
-    <path d="M0 430 Q200 410, 450 425 T900 415 T1400 428"/>
-    <path d="M0 445 Q250 430, 500 440 T950 432 T1400 442"/>
-    <path d="M0 460 Q300 448, 550 455 T1000 448 T1400 458"/>
+  <!-- ═══ Circuit / connection lines (biotech feel) ═══ -->
+  <g stroke="#60a5fa" stroke-width="0.5" fill="none" opacity="0.08">
+    <line x1="0" y1="120" x2="300" y2="120"/>
+    <line x1="300" y1="120" x2="320" y2="140"/>
+    <line x1="320" y1="140" x2="500" y2="140"/>
+    <circle cx="300" cy="120" r="2.5" fill="#60a5fa"/>
+    <circle cx="500" cy="140" r="2.5" fill="#60a5fa"/>
+    <line x1="900" y1="100" x2="1100" y2="100"/>
+    <line x1="1100" y1="100" x2="1120" y2="120"/>
+    <line x1="1120" y1="120" x2="1400" y2="120"/>
+    <circle cx="1100" cy="100" r="2.5" fill="#60a5fa"/>
   </g>
 
-  <!-- ═══ Abstract neon rectangles (Dotonbori signage) ═══ -->
-  <g opacity="0.12">
-    <!-- Far left cluster -->
-    <rect x="80" y="220" width="28" height="140" rx="3" fill="#3b82f6"/>
-    <rect x="115" y="250" width="22" height="110" rx="3" fill="#60a5fa"/>
-    <rect x="145" y="235" width="18" height="125" rx="3" fill="#93c5fd"/>
-    <!-- Left-center cluster -->
-    <rect x="260" y="240" width="24" height="120" rx="3" fill="#2563eb"/>
-    <rect x="290" y="260" width="20" height="100" rx="3" fill="#60a5fa"/>
-    <rect x="318" y="248" width="16" height="112" rx="3" fill="#93c5fd"/>
-    <!-- Right-center cluster -->
-    <rect x="1040" y="235" width="22" height="125" rx="3" fill="#3b82f6"/>
-    <rect x="1070" y="255" width="18" height="105" rx="3" fill="#60a5fa"/>
-    <rect x="1095" y="242" width="24" height="118" rx="3" fill="#93c5fd"/>
-    <!-- Far right cluster -->
-    <rect x="1220" y="225" width="26" height="135" rx="3" fill="#2563eb"/>
-    <rect x="1255" y="250" width="20" height="110" rx="3" fill="#60a5fa"/>
-    <rect x="1282" y="238" width="18" height="122" rx="3" fill="#93c5fd"/>
+  <!-- ═══ Large medical shield (center-right, main visual) ═══ -->
+  <g transform="translate(920, 100)">
+    <!-- Shield shape -->
+    <path d="M0,-80 L70,-55 L70,20 Q70,80 0,110 Q-70,80 -70,20 L-70,-55Z"
+          fill="url(#shieldGrad)" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
+    <!-- Cross on shield -->
+    <rect x="-8" y="-40" width="16" height="80" rx="4" fill="#60a5fa" opacity="0.6"/>
+    <rect x="-40" y="-8" width="80" height="16" rx="4" fill="#60a5fa" opacity="0.6"/>
   </g>
 
-  <!-- ═══ Tsutenkaku silhouette (center) ═══ -->
-  <g transform="translate(700, 60)" opacity="0.18">
-    <!-- Base platform -->
-    <rect x="-45" y="300" width="90" height="40" rx="2" fill="#1e40af"/>
-    <!-- Lower body -->
-    <path d="M-35 300 L-25 200 L25 200 L35 300Z" fill="#1e40af"/>
-    <!-- Observation deck -->
-    <rect x="-30" y="185" width="60" height="18" rx="3" fill="#1e40af"/>
-    <!-- Upper narrowing body -->
-    <path d="M-22 185 L-14 100 L14 100 L22 185Z" fill="#1e40af"/>
-    <!-- Upper deck -->
-    <rect x="-18" y="90" width="36" height="14" rx="2" fill="#1e40af"/>
-    <!-- Spire -->
-    <path d="M-8 90 L-4 30 L0 8 L4 30 L8 90Z" fill="#1e40af"/>
-    <!-- Cross-beams (lattice detail) -->
-    <line x1="-30" y1="220" x2="30" y2="270" stroke="#1e40af" stroke-width="2"/>
-    <line x1="30" y1="220" x2="-30" y2="270" stroke="#1e40af" stroke-width="2"/>
-    <line x1="-28" y1="250" x2="28" y2="295" stroke="#1e40af" stroke-width="1.5"/>
-    <line x1="28" y1="250" x2="-28" y2="295" stroke="#1e40af" stroke-width="1.5"/>
-  </g>
-
-  <!-- Building glow under Tsutenkaku -->
-  <ellipse cx="700" cy="400" rx="200" ry="60" fill="url(#bldGlow)"/>
-
-  <!-- ═══ Medical cross (top-right, subtle) ═══ -->
-  <g transform="translate(1100, 80)" opacity="0.15">
-    <circle cx="0" cy="0" r="60" fill="url(#crossGlow)"/>
-    <rect x="-6" y="-24" width="12" height="48" rx="2" fill="#1e40af"/>
-    <rect x="-24" y="-6" width="48" height="12" rx="2" fill="#1e40af"/>
-  </g>
-
-  <!-- ═══ ECG heartbeat wave (mid-lower, spanning width) ═══ -->
-  <g transform="translate(0, 340)">
+  <!-- ═══ ECG heartbeat wave (main, prominent) ═══ -->
+  <g filter="url(#ecgGlow)">
     <polyline
-      points="0,0 100,0 180,0 220,-8 240,0 340,0
-              380,-3 395,-18 410,24 425,-32 440,12 455,-6 470,0
-              570,0 620,-5 640,0 740,0
-              780,-3 795,-18 810,24 825,-32 840,12 855,-6 870,0
-              970,0 1020,-5 1040,0 1140,0
-              1180,-3 1195,-18 1210,24 1225,-32 1240,12 1255,-6 1270,0
-              1370,0 1400,0"
+      points="0,260 80,260 160,260 200,256 220,260 300,260
+              340,260 360,256 375,240 392,280 408,220 425,290 440,235 455,252 470,260
+              550,260 620,256 640,260 720,260
+              760,260 780,256 795,240 812,280 828,220 845,290 860,235 875,252 890,260
+              970,260 1040,256 1060,260 1140,260
+              1180,260 1200,256 1215,240 1232,280 1248,220 1265,290 1280,235 1295,252 1310,260
+              1380,260 1400,260"
       fill="none"
-      stroke="#3b82f6"
-      stroke-width="1.8"
+      stroke="#38bdf8"
+      stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      opacity="0.2"
+      opacity="0.5"
     />
   </g>
+  <!-- Thinner secondary ECG -->
+  <polyline
+    points="0,275 120,275 200,275 240,272 260,275 380,275
+            420,275 435,272 445,266 455,282 465,258 475,284 485,268 490,273 500,275
+            600,275 700,275 780,275
+            820,275 835,272 845,266 855,282 865,258 875,284 885,268 890,273 900,275
+            1000,275 1100,275 1180,275
+            1220,275 1235,272 1245,266 1255,282 1265,258 1275,284 1285,268 1290,273 1300,275
+            1400,275"
+    fill="none"
+    stroke="#60a5fa"
+    stroke-width="1"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.2"
+  />
 
-  <!-- ═══ Smaller medical cross (top-left area) ═══ -->
-  <g transform="translate(200, 100)" opacity="0.1">
-    <rect x="-4" y="-16" width="8" height="32" rx="1.5" fill="#1e40af"/>
-    <rect x="-16" y="-4" width="32" height="8" rx="1.5" fill="#1e40af"/>
+  <!-- ═══ Medical crosses (scattered, varying sizes) ═══ -->
+  <!-- Large cross top-left -->
+  <g transform="translate(180, 90)" opacity="0.2">
+    <rect x="-5" y="-20" width="10" height="40" rx="2" fill="#93c5fd"/>
+    <rect x="-20" y="-5" width="40" height="10" rx="2" fill="#93c5fd"/>
+  </g>
+  <!-- Medium cross right -->
+  <g transform="translate(1250, 160)" opacity="0.15">
+    <rect x="-4" y="-14" width="8" height="28" rx="2" fill="#93c5fd"/>
+    <rect x="-14" y="-4" width="28" height="8" rx="2" fill="#93c5fd"/>
+  </g>
+  <!-- Small cross bottom-left -->
+  <g transform="translate(120, 340)" opacity="0.12">
+    <rect x="-3" y="-10" width="6" height="20" rx="1.5" fill="#93c5fd"/>
+    <rect x="-10" y="-3" width="20" height="6" rx="1.5" fill="#93c5fd"/>
+  </g>
+  <!-- Small cross top-center -->
+  <g transform="translate(620, 60)" opacity="0.1">
+    <rect x="-3" y="-10" width="6" height="20" rx="1.5" fill="#93c5fd"/>
+    <rect x="-10" y="-3" width="20" height="6" rx="1.5" fill="#93c5fd"/>
   </g>
 
-  <!-- ═══ Stethoscope abstract line (left area) ═══ -->
-  <g transform="translate(380, 130)" opacity="0.1" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round">
-    <path d="M0,0 Q-15,30 -5,55 Q5,80 0,100"/>
-    <circle cx="0" cy="112" r="12" stroke-width="2"/>
-    <circle cx="0" cy="112" r="4" fill="#1e40af" stroke="none"/>
+  <!-- ═══ Heart icon (left area) ═══ -->
+  <g transform="translate(340, 150)" opacity="0.15">
+    <path d="M0,12 C0,12 -24,-8 -24,-20 C-24,-30 -14,-34 -6,-28 C-2,-25 0,-20 0,-20
+             C0,-20 2,-25 6,-28 C14,-34 24,-30 24,-20 C24,-8 0,12 0,12Z"
+          fill="#60a5fa" stroke="#93c5fd" stroke-width="1"/>
   </g>
 
-  <!-- ═══ Floating plus signs (clinical accents) ═══ -->
-  <g opacity="0.08" fill="#1e40af">
-    <text x="500" y="140" font-size="18" font-family="sans-serif" font-weight="300">+</text>
-    <text x="900" y="170" font-size="14" font-family="sans-serif" font-weight="300">+</text>
-    <text x="1200" y="200" font-size="16" font-family="sans-serif" font-weight="300">+</text>
-    <text x="150" y="300" font-size="12" font-family="sans-serif" font-weight="300">+</text>
-    <text x="1300" y="130" font-size="10" font-family="sans-serif" font-weight="300">+</text>
+  <!-- ═══ Pill capsule (subtle, right) ═══ -->
+  <g transform="translate(1100, 320) rotate(-30)" opacity="0.1">
+    <rect x="-8" y="-20" width="16" height="40" rx="8" fill="none" stroke="#93c5fd" stroke-width="1.2"/>
+    <line x1="-8" y1="0" x2="8" y2="0" stroke="#93c5fd" stroke-width="1"/>
   </g>
 
-  <!-- ═══ Text readability overlay (bottom gradient) ═══ -->
+  <!-- ═══ DNA helix (left side, abstract) ═══ -->
+  <g transform="translate(60, 160)" opacity="0.08" stroke="#93c5fd" fill="none" stroke-width="1.2">
+    <path d="M0,0 Q15,20 0,40 Q-15,60 0,80 Q15,100 0,120 Q-15,140 0,160"/>
+    <path d="M20,0 Q5,20 20,40 Q35,60 20,80 Q5,100 20,120 Q35,140 20,160"/>
+    <!-- Rungs -->
+    <line x1="3" y1="20" x2="17" y2="20"/>
+    <line x1="-2" y1="60" x2="22" y2="60"/>
+    <line x1="3" y1="100" x2="17" y2="100"/>
+    <line x1="-2" y1="140" x2="22" y2="140"/>
+  </g>
+
+  <!-- ═══ Tsutenkaku silhouette (far right, subtle Osaka accent) ═══ -->
+  <g transform="translate(1340, 180)" opacity="0.07">
+    <rect x="-20" y="180" width="40" height="20" rx="1" fill="#93c5fd"/>
+    <path d="M-15 180 L-10 120 L10 120 L15 180Z" fill="#93c5fd"/>
+    <rect x="-12" y="112" width="24" height="10" rx="2" fill="#93c5fd"/>
+    <path d="M-9 112 L-5 60 L5 60 L9 112Z" fill="#93c5fd"/>
+    <rect x="-7" y="54" width="14" height="8" rx="1" fill="#93c5fd"/>
+    <path d="M-3 54 L0 20 L3 54Z" fill="#93c5fd"/>
+  </g>
+
+  <!-- ═══ Osaka Castle silhouette (far left, subtle) ═══ -->
+  <g transform="translate(50, 200)" opacity="0.06" fill="#93c5fd">
+    <!-- Base -->
+    <rect x="-25" y="140" width="50" height="10" rx="1"/>
+    <!-- Body -->
+    <path d="M-20 140 L-15 100 L15 100 L20 140Z"/>
+    <!-- Roof -->
+    <path d="M-22 100 L0 75 L22 100Z"/>
+    <!-- Upper roof -->
+    <path d="M-12 80 L0 62 L12 80Z"/>
+    <!-- Spire -->
+    <line x1="0" y1="62" x2="0" y2="50" stroke="#93c5fd" stroke-width="1.5"/>
+  </g>
+
+  <!-- ═══ Floating circles (cells / molecular) ═══ -->
+  <g opacity="0.06">
+    <circle cx="500" cy="100" r="30" stroke="#93c5fd" stroke-width="0.8" fill="none"/>
+    <circle cx="500" cy="100" r="8" fill="#60a5fa"/>
+    <circle cx="800" cy="380" r="22" stroke="#93c5fd" stroke-width="0.8" fill="none"/>
+    <circle cx="800" cy="380" r="6" fill="#60a5fa"/>
+    <circle cx="1300" cy="80" r="18" stroke="#93c5fd" stroke-width="0.8" fill="none"/>
+    <circle cx="1300" cy="80" r="5" fill="#60a5fa"/>
+    <circle cx="250" cy="420" r="15" stroke="#93c5fd" stroke-width="0.8" fill="none"/>
+    <circle cx="250" cy="420" r="4" fill="#60a5fa"/>
+  </g>
+
+  <!-- ═══ Floating plus signs ═══ -->
+  <g fill="#60a5fa">
+    <g transform="translate(450, 180)" opacity="0.12">
+      <rect x="-1.5" y="-6" width="3" height="12" rx="1"/>
+      <rect x="-6" y="-1.5" width="12" height="3" rx="1"/>
+    </g>
+    <g transform="translate(750, 80)" opacity="0.08">
+      <rect x="-1.5" y="-6" width="3" height="12" rx="1"/>
+      <rect x="-6" y="-1.5" width="12" height="3" rx="1"/>
+    </g>
+    <g transform="translate(1050, 430)" opacity="0.1">
+      <rect x="-1.5" y="-6" width="3" height="12" rx="1"/>
+      <rect x="-6" y="-1.5" width="12" height="3" rx="1"/>
+    </g>
+    <g transform="translate(600, 400)" opacity="0.08">
+      <rect x="-1" y="-4" width="2" height="8" rx="0.5"/>
+      <rect x="-4" y="-1" width="8" height="2" rx="0.5"/>
+    </g>
+    <g transform="translate(1180, 260)" opacity="0.06">
+      <rect x="-1" y="-4" width="2" height="8" rx="0.5"/>
+      <rect x="-4" y="-1" width="8" height="2" rx="0.5"/>
+    </g>
+  </g>
+
+  <!-- ═══ Subtle dot grid overlay (clinical precision) ═══ -->
+  <g opacity="0.04">
+    <pattern id="gridDots" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="15" cy="15" r="0.8" fill="#e0f2fe"/>
+    </pattern>
+    <rect width="1400" height="500" fill="url(#gridDots)"/>
+  </g>
+
+  <!-- ═══ Text readability overlay ═══ -->
   <rect width="1400" height="500" fill="url(#textOverlay)"/>
 </svg>
